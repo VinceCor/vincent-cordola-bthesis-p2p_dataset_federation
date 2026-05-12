@@ -21,8 +21,9 @@ This document will evolve as the project progresses, and the initial information
 | Weeks | Deliverable | Target date | Status |
 |---|-------------|-------------|--------|
 | W1-W2 | **1. Onboarding & Technical Design** | 11.05 - 24.05 |  |
-|  | Report setup, GitHub page, planning | 24.05 | In progress |
+|  | Report setup, GitHub page, planning | 24.05 | Done |
 |  | Dataset layout conventions defined | 24.05 | In progress |
+|  | logical topology (to get an overview of the project) | 24.05 | In progress |
 |  | Rust & iroh crash-course completed | 24.05 | In progress |
 | W3-W6 | **2. Core P2P sharing prototype** | 25.05 - 21.06 | |
 |  | Rust MVP: (i) join an ad-hoc iroh network, (ii) advertise Parquet files, and (iii) fetch Parquet files from peers. | 21.06 | Upcoming |
@@ -101,22 +102,24 @@ This document will evolve as the project progresses, and the initial information
 - Created the project repository and also created the page for the report (template ISC bhtesis on Typst).
 - Initial review of MRIQC API to get a first idea of how to define the dataset layout convetions.
 
-**Decisions / Observations:**
-- Managing this project is important for better monitoring
-
-**Blockers:**
+**Decisions / Observations / Blockers:**
+- Create the project management file for this project is important for better monitoring
 
 **Next steps:**
+- Create the project management
 
 ### 12/05/2026 - Deliverable
 
 **Work done:**
+- Creation of the first version for project management markdown
+- Research on MRIQC to subsequently establish dataset layout conventions
+- Research on the overall project structure to subsentquently create an initial logical topology and gain a better understanding of each project.
 
-**Decisions / Observations:**
-
-**Blockers:**
+**Decisions / Observations / Blockers:**
 
 **Next steps:**
+- Do the Dataset layout conventions
+- Do the logical topology
 
 <!-- journal tempalte
 
@@ -124,9 +127,8 @@ This document will evolve as the project progresses, and the initial information
 
 **Work done:**
 
-**Decisions / Observations:**
+**Decisions / Observations / Blockers:**
 
-**Blockers:**
 
 **Next steps:**
 
