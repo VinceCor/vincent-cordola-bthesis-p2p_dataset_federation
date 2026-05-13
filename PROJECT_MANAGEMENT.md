@@ -42,8 +42,8 @@ This document will evolve as the project progresses, and the initial information
 |  | Write a short evaluation report summarizing results, constraints, and recommended next steps for downstream integration work. | 12.08 | Upcoming |
 |  | **Final code submitted** | **12/08/2026 12:00** | Upcoming |
 |  | **Final report submitted** | **12/08/2026 12:00** | Upcoming |
-|  | **Executive summary** | **?** | Upcoming |
-|  | **Poster** | **?** | Upcoming |
+|  | **Executive summary** | **25/08/2026** | Upcoming |
+|  | **Poster** | **25/08/2026** | Upcoming |
 
 ### 1.2 Key Milestones
 
@@ -55,7 +55,7 @@ This document will evolve as the project progresses, and the initial information
 | Final code submission | August 12, 2026 - 12:00 |
 | Final report submission | August 12, 2026 - 12:00 |
 | Oral defence | Weeks of August 17 - 25, 2026 |
-| Poster | ?, 2026 |
+| Poster | August 25, 2026 |
 | Poster exhibition | August 28, 2026 - HEI |
 | Pitch challenge | August 31, 2026 - Monthey |
 
@@ -99,7 +99,7 @@ This document will evolve as the project progresses, and the initial information
 
 **Work done:**
 - Reviewed the criteria for the bachelor's thesis using the information provided on ISC Learn.
-- Created the project repository and also created the page for the report (template ISC bhtesis on Typst).
+- Created the project repository and also created the page for the report (template ISC bthesis on Typst).
 - Initial review of MRIQC API to get a first idea of how to define the dataset layout convetions.
 
 **Decisions / Observations / Blockers:**
@@ -108,7 +108,9 @@ This document will evolve as the project progresses, and the initial information
 **Next steps:**
 - Create the project management
 
-### 12/05/2026 - Deliverable
+---
+
+### 12/05/2026 - Report setup, GitHub page, planning
 
 **Work done:**
 - Creation of the first version for project management markdown
@@ -121,6 +123,25 @@ This document will evolve as the project progresses, and the initial information
 - Do the Dataset layout conventions
 - Do the logical topology
 
+---
+
+### 13/05/2026 - Deliverable
+
+**Work done:**
+- Research on tools for designing the dataset layout
+    - [MRIQC](https://mriqc.readthedocs.io/en/latest/reports/group.html)
+    - [DuckDB Parquet support](https://duckdb.org/docs/current/data/parquet/overview)
+    - [pyarrow write table API, parameters,schema...](https://arrow.apache.org/docs/python/generated/pyarrow.parquet.write_table.html)
+    - [iroh_blobs](https://docs.rs/iroh-blobs/latest/iroh_blobs/)
+    - [Parquet file anatomy](https://towardsdatascience.com/anatomy-of-a-parquet-file/)
+
+**Decisions / Observations / Blockers:**
+- Starting tomorrow, I'll have to write something "concrete," otherwise I risk spreading myself too thin. I'll try to come up with a first draft, even if it's minimal.
+
+**Next steps:**
+- Minimal version of Dataset layout convetions
+- Minimal version of logical topology
+
 <!-- journal tempalte
 
 ### DD/MM/YYYY - Deliverable
@@ -128,7 +149,6 @@ This document will evolve as the project progresses, and the initial information
 **Work done:**
 
 **Decisions / Observations / Blockers:**
-
 
 **Next steps:**
 
