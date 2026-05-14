@@ -40,8 +40,8 @@ This document will evolve as the project progresses, and the initial information
 |  | Finalize the notebook as the primary demonstration artifact. | 12.08 | Upcoming |
 |  | Produce setup scripts/instructions for reproducing the demo on 2–5 machines | 12.08 | Upcoming |
 |  | Write a short evaluation report summarizing results, constraints, and recommended next steps for downstream integration work. | 12.08 | Upcoming |
-|  | **Final code submitted** | **12/08/2026 12:00** | Upcoming |
-|  | **Final report submitted** | **12/08/2026 12:00** | Upcoming |
+|  | **Final code submitted** | **25/08/2026 12:00** | Upcoming |
+|  | **Final report submitted** | **25/08/2026 12:00** | Upcoming |
 |  | **Executive summary** | **25/08/2026** | Upcoming |
 |  | **Poster** | **25/08/2026** | Upcoming |
 
@@ -52,9 +52,9 @@ This document will evolve as the project progresses, and the initial information
 | Bachelor thesis start | May 11, 2026 |
 | Midterm presentation | June 3, 2026 |
 | Executive summary | July 24, 2026 |
-| Final code submission | August 12, 2026 - 12:00 |
-| Final report submission | August 12, 2026 - 12:00 |
 | Oral defence | Weeks of August 17 - 25, 2026 |
+| Final code submission | August 25, 2026 - 12:00 |
+| Final report submission | August 25, 2026 - 12:00 |
 | Poster | August 25, 2026 |
 | Poster exhibition | August 28, 2026 - HEI |
 | Pitch challenge | August 31, 2026 - Monthey |
@@ -141,6 +141,42 @@ This document will evolve as the project progresses, and the initial information
 **Next steps:**
 - Minimal version of Dataset layout convetions
 - Minimal version of logical topology
+
+---
+
+### 14/05/2026
+
+**Work done:**
+- Start the minimal version of dataset layout
+- Do some research about iroh, DuckDB
+- Learning Rust
+
+
+**Decisions / Observations / Blockers:**
+- I'll need your approval of the dataset layout once it's finished
+
+**Next steps:**
+- Continue learning Rust
+- Moving forward with the dataset layout
+- Start the logical topology if possible
+
+---
+
+### 15/05/2026 - Deliverable
+
+**Work done:**
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+
+---
+
+## Weekly Summary 11/05 - 15/05
+
+**Abstract**
+
+**Next week**
 
 <!-- journal tempalte
 
