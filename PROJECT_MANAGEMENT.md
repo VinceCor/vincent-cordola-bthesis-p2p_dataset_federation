@@ -95,7 +95,7 @@ This document will evolve as the project progresses, and the initial information
 
 ## 4. Work Journal
 
-### 11/05/2026 - 1. Report setup, GitHub page, planning
+### 11/05/2026 - Report setup, GitHub page, planning
 
 **Work done:**
 - Reviewed the criteria for the bachelor's thesis using the information provided on ISC Learn.
@@ -125,7 +125,7 @@ This document will evolve as the project progresses, and the initial information
 
 ---
 
-### 13/05/2026 - Deliverable
+### 13/05/2026
 
 **Work done:**
 - Research on tools for designing the dataset layout
@@ -162,19 +162,43 @@ This document will evolve as the project progresses, and the initial information
 
 ---
 
-### 15/05/2026 - Deliverable
+### 15/05/2026
 
 **Work done:**
+- Progress on the layout convetions dataset
+- Learning about iroh to see how blobs work
 
 **Decisions / Observations / Blockers:**
 
 **Next steps:**
-
+- Finish the first draft for the dataset layout conventions
+- Start logical topology
 ---
 
 ## Weekly Summary 11/05 - 15/05
 
 **Abstract**
+During this first week, i began laying the groundwork for the project. It was a bit of a struggle to get started and stay focused after moving to a new country. However, i was still able to make a good start on the planning, which will help me with the project's ongoing progress.
+
+**Next week**
+- I should finish the dataset layout document as well as the one on topology.
+- Schedule weekly meetings and the interim presentation in early June.
+- Keep learning Rust and iroh so I'll be ready to start implementation next week.
+
+## Weekly Summary 11/05 - 17/05
+
+**Abstract**
+During this first week, i began laying the groundwork for the project. It was a bit of a struggle to get started and stay focused after moving to a new country. However, i was still able to make a good start on the planning, which will help me with the project's ongoing progress.
+
+**Next week**
+- I should finish the dataset layout document as well as the one on topology.
+- Schedule weekly meetings and the interim presentation in early June.
+- Keep learning Rust and iroh so I'll be ready to start implementation next week.
+
+## Weekly Summary 18/05 - 24/05
+
+**Abstract**
+
 
 **Next week**
 
