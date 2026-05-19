@@ -51,9 +51,9 @@ This document will evolve as the project progresses, and the initial information
 |-----------|------|
 | Bachelor thesis start | May 11, 2026 |
 | Midterm presentation | June 3, 2026 |
-| Executive summary | July 24, 2026 |
 | Oral defence | Weeks of August 17 - 25, 2026 |
 | Final code submission | August 25, 2026 - 12:00 |
+| Executive summary | August 25, 2026 |
 | Final report submission | August 25, 2026 - 12:00 |
 | Poster | August 25, 2026 |
 | Poster exhibition | August 28, 2026 - HEI |
@@ -185,15 +185,28 @@ During this first week, i began laying the groundwork for the project. It was a 
 - Schedule weekly meetings and the interim presentation in early June.
 - Keep learning Rust and iroh so I'll be ready to start implementation next week.
 
-## Weekly Summary 11/05 - 17/05
+### 18/05/2026 - Public holiday (Journée nationale des Patriotes)
 
-**Abstract**
-During this first week, i began laying the groundwork for the project. It was a bit of a struggle to get started and stay focused after moving to a new country. However, i was still able to make a good start on the planning, which will help me with the project's ongoing progress.
+**Work done:**
+- Preparing presentation of my project for the lab
+- Rust learning
+**Decisions / Observations / Blockers:**
 
-**Next week**
-- I should finish the dataset layout document as well as the one on topology.
-- Schedule weekly meetings and the interim presentation in early June.
-- Keep learning Rust and iroh so I'll be ready to start implementation next week.
+**Next steps:**
+
+### 19/05/2026
+
+**Work done:**
+- Presentation of my project at the lab [Introduction p2p projet](doc/media/bthesis_proj_intro.pdf)
+- Converstation with Dr. Nikhil Bhagwat about QC studio
+- Modification of the data layout convention document
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+- Finalize the first draft of the data layout convetion
+- Getting started with logical topology
+
 
 ## Weekly Summary 18/05 - 24/05
 
