@@ -207,6 +207,16 @@ During this first week, i began laying the groundwork for the project. It was a 
 - Finalize the first draft of the data layout convetion
 - Getting started with logical topology
 
+### 20/05/2026
+
+**Work done:**
+- First draft for the dataset layout conventions
+
+**Decisions / Observations / Blockers:**
+- There will be updates in the future for the dataset layout conventions, this provides a starting point.
+
+**Next steps:**
+
 
 ## Weekly Summary 18/05 - 24/05
 
