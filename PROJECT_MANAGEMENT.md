@@ -22,8 +22,8 @@ This document will evolve as the project progresses, and the initial information
 |---|-------------|-------------|--------|
 | W1-W2 | **1. Onboarding & Technical Design** | 11.05 - 24.05 |  |
 |  | Report setup, GitHub page, planning | 24.05 | Done |
-|  | Dataset layout conventions defined | 24.05 | In progress |
-|  | logical topology (to get an overview of the project) | 24.05 | In progress |
+|  | Dataset layout conventions defined | 24.05 | Done |
+|  | logical topology (to get an overview of the project, first draft) | 24.05 | In progress |
 |  | Rust & iroh crash-course completed | 24.05 | In progress |
 | W3-W6 | **2. Core P2P sharing prototype** | 25.05 - 21.06 | |
 |  | Rust MVP: (i) join an ad-hoc iroh network, (ii) advertise Parquet files, and (iii) fetch Parquet files from peers. | 21.06 | Upcoming |
@@ -185,6 +185,8 @@ During this first week, i began laying the groundwork for the project. It was a 
 - Schedule weekly meetings and the interim presentation in early June.
 - Keep learning Rust and iroh so I'll be ready to start implementation next week.
 
+---
+
 ### 18/05/2026 - Public holiday (Journée nationale des Patriotes)
 
 **Work done:**
@@ -193,6 +195,8 @@ During this first week, i began laying the groundwork for the project. It was a 
 **Decisions / Observations / Blockers:**
 
 **Next steps:**
+
+---
 
 ### 19/05/2026
 
@@ -207,16 +211,30 @@ During this first week, i began laying the groundwork for the project. It was a 
 - Finalize the first draft of the data layout convetion
 - Getting started with logical topology
 
+---
+
 ### 20/05/2026
 
 **Work done:**
 - First draft for the dataset layout conventions
-
+- Start of the document describing the project architecture
 **Decisions / Observations / Blockers:**
 - There will be updates in the future for the dataset layout conventions, this provides a starting point.
 
 **Next steps:**
+- Continue and finish the first draft for the architecture
+- Continue with the Rust courses and possibly start focusing more on the early stages of development for the iroh component.
+- Define how the development environment will be structured
 
+---
+
+### 21/05/2026
+
+**Work done:**
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
 
 ## Weekly Summary 18/05 - 24/05
 
@@ -227,7 +245,7 @@ During this first week, i began laying the groundwork for the project. It was a 
 
 <!-- journal tempalte
 
-### DD/MM/YYYY - Deliverable
+### DD/MM/YYYY
 
 **Work done:**
 

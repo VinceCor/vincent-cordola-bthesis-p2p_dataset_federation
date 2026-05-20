@@ -6,6 +6,7 @@
 3. [Directory structure](#3-directory-structure-on-each-peer)
 4. [Dataset metadata](#4-dataset-metadata)
 5. [Parquet file schema](#5-parquet-file-schema)
+6. [Integrity](#6-integrity)
 
 ## 1. Scope and objectives
 This document lists the representation options for a federated Parquet dataset distributed over an ad-hoc P2P network (iroh). It covers three dimensions:
