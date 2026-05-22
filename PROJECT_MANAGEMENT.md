@@ -231,6 +231,21 @@ During this first week, i began laying the groundwork for the project. It was a 
 ### 21/05/2026
 
 **Work done:**
+- Progress on the architecture document
+- Iroh documentation
+
+**Decisions / Observations / Blockers:**
+- I should be careful not to spend too much time reading the documentation, it’s better for me to start the implementation and learn as I go rather than just reading the documentation.
+
+**Next steps:**
+- Finish first draft architecture document
+- Start implementation
+
+---
+
+### 22/05/2026
+
+**Work done:**
 
 **Decisions / Observations / Blockers:**
 
