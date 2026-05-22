@@ -4,6 +4,8 @@ This document provides an overview of the components used in this project. It de
 This document will be updated throughout the project.
 
 ## Table of Contents
+1. [Global topology](#1-global-topology)
+
 
 ## 1. Global Topology
 Here is an overview of the project's overall architecture.
