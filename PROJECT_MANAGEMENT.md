@@ -21,25 +21,25 @@ This document will evolve as the project progresses, and the initial information
 | Weeks | Deliverable | Target date | Status |
 |---|-------------|-------------|--------|
 | W1-W2 | **1. Onboarding & Technical Design** | 11.05 - 24.05 |  |
-|  | Report setup, GitHub page, planning | 24.05 | Done |
-|  | Dataset layout conventions defined | 24.05 | Done |
-|  | logical topology (to get an overview of the project, first draft) | 24.05 | In progress |
-|  | Rust & iroh crash-course completed | 24.05 | In progress |
+| Milestone | Rust & iroh crash-course completed | 24.05 | In progress |
+| Milestone | Dataset layout conventions defined | 24.05 | Done |
+| Task | Report setup, GitHub page, planning | 24.05 | Done |
+| Task | logical topology (to get an overview of the project, first draft) | 24.05 | In progress |
 | W3-W6 | **2. Core P2P sharing prototype** | 25.05 - 21.06 | |
-|  | Rust MVP: (i) join an ad-hoc iroh network, (ii) advertise Parquet files, and (iii) fetch Parquet files from peers. | 21.06 | Upcoming |
-|  | Validation on a Docker Compose network of 3–5 containers. | 21.06 | Upcoming |
+| Milestone | Rust MVP: (i) join an ad-hoc iroh network, (ii) advertise Parquet files, and (iii) fetch Parquet files from peers. | 21.06 | Upcoming |
+| Milestone | Validation on a Docker Compose network of 3–5 containers. | 21.06 | Upcoming |
 | W7-W10 | **3. Python/Jupyter integration and connectivity validation** | 22.06 - 19.07 | |
-|  | Python client layer: a unified Jupyter interface ensuring required files are present locally via on-demand retrieval. | 19.07 | Upcoming |
-|  | Migrate the testbed to virtual machines with separate network stacks to exercise NAT traversal and relay fallback for the first time. | 19.07 | Upcoming |
-|  | Produce a first working notebook that discovers the network dataset, loads it into standard dataframe tooling, and runs queries spanning multiple peers. | 19.07 | Upcoming |
+| Milestone | Python client layer: a unified Jupyter interface ensuring required files are present locally via on-demand retrieval. | 19.07 | Upcoming |
+| Milestone | Migrate the testbed to virtual machines with separate network stacks to exercise NAT traversal and relay fallback for the first time. | 19.07 | Upcoming |
+| Milestone | Produce a first working notebook that discovers the network dataset, loads it into standard dataframe tooling, and runs queries spanning multiple peers. | 19.07 | Upcoming |
 | W11-W13 | **4. Robustness and evaluation in a 2–5 machine testbed** | 20.07 - 09.08 | |
-|  | Test behavior under realistic conditions: peers joining/leaving, partial availability, varying bandwidth. | 09.08 | Upcoming |
-|  | Improve reliability (resume partial transfers, cache behavior, error handling) and document known limitations. | 09.08 | Upcoming |
-|  | Optional (if feasible): evaluate byte-range or partial reads to reduce transfers for larger Parquet artifacts. | 09.08 | Upcoming |
+| Milestone | Test behavior under realistic conditions: peers joining/leaving, partial availability, varying bandwidth. | 09.08 | Upcoming |
+| Milestone | Improve reliability (resume partial transfers, cache behavior, error handling) and document known limitations. | 09.08 | Upcoming |
+| Milestone | Optional (if feasible): evaluate byte-range or partial reads to reduce transfers for larger Parquet artifacts. | 09.08 | Upcoming |
 | W14 | **5. Packaging, documentation, and final demonstration** | 10.08 - 12.08 | |
-|  | Finalize the notebook as the primary demonstration artifact. | 12.08 | Upcoming |
-|  | Produce setup scripts/instructions for reproducing the demo on 2–5 machines | 12.08 | Upcoming |
-|  | Write a short evaluation report summarizing results, constraints, and recommended next steps for downstream integration work. | 12.08 | Upcoming |
+| Milestone | Finalize the notebook as the primary demonstration artifact. | 12.08 | Upcoming |
+| Milestone | Produce setup scripts/instructions for reproducing the demo on 2–5 machines | 12.08 | Upcoming |
+| Milestone | Write a short evaluation report summarizing results, constraints, and recommended next steps for downstream integration work. | 12.08 | Upcoming |
 |  | **Final code submitted** | **25/08/2026 12:00** | Upcoming |
 |  | **Final report submitted** | **25/08/2026 12:00** | Upcoming |
 |  | **Executive summary** | **25/08/2026** | Upcoming |
