@@ -260,6 +260,8 @@ During this first week, i began laying the groundwork for the project. It was a 
 **Next steps:**
 - Continue the rust-mvp
 
+---
+
 ## Weekly Summary 18/05 - 24/05
 
 **Abstract**
@@ -267,6 +269,19 @@ During this second week, I did a lot of research on the technologies I would be 
 
 **Next week**
 If possible, I'll try to finish the Rust MVP (non Docker version). With all the examples I can find online, I should be able to quickly exchange PArquet files between two terminals. If all goes well, I'll be able to package this into Docker containers the following week.
+
+---
+### 25/05/2026
+
+**Work done:**
+- New search on iroh regarding endpoints
+- Review of the general documentation
+
+**Decisions / Observations / Blockers:**
+- I need to provide some initial results regarding iroh, I don't need to go into that much detail in the documentation
+
+**Next steps:**
+- Continue join an ad hoc iroh network
 
 ## Weekly Summary 25/05 - 31/05
 
@@ -277,7 +292,7 @@ If possible, I'll try to finish the Rust MVP (non Docker version). With all the 
 
 <!-- journal tempalte
 
-### DD/MM/YYYY
+### DD/MM/2026
 
 **Work done:**
 
