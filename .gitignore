@@ -1,2 +1,3 @@
 rust-mvp/rust-mvp/target/
 rust-mvp/rust-mvp/Cargo.lock
+.vscode/

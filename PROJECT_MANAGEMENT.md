@@ -17,6 +17,8 @@ This document will evolve as the project progresses, and the initial information
 ## 1. Planning
 
 ### 1.1 Deliverables
+- **Milestone:** Tasks included in the PDF: [Donnée du travail de bachelor](https://isc-hei.github.io/isc-typst-tb-descriptions/)
+- **Task:** Tasks created during the project to provide a clearer overview of the various steps to be completed
 
 | Weeks | Deliverable | Target date | Status |
 |---|-------------|-------------|--------|
@@ -27,7 +29,7 @@ This document will evolve as the project progresses, and the initial information
 | Task | logical topology (to get an overview of the project, first draft) | 24.05 | Done |
 | W3-W6 | **2. Core P2P sharing prototype** | 25.05 - 21.06 | |
 | **Milestone** | Rust MVP: (i) join an ad-hoc iroh network, (ii) advertise Parquet files, and (iii) fetch Parquet files from peers. | 31.05 | In progress |
-| Task | Setting up the Rust project | 31.05 | In progress |
+| Task | Setting up the Rust project | 31.05 | Done |
 | Task | Join an ad hoc iroh network | 31.05 | In progress |
 | Task | Advertise and fetch Parquet files from peers | 31.05 | Upcoming |
 | Task | End-to-end test on two terminals (same machine) | 31.05 | Upcoming |
@@ -282,6 +284,34 @@ If possible, I'll try to finish the Rust MVP (non Docker version). With all the 
 
 **Next steps:**
 - Continue join an ad hoc iroh network
+
+---
+
+### 26/05/2026
+
+**Work done:**
+- Good progress on Join an ad hoc iroh network 
+- The dependencies should work fine for this part
+
+**Decisions / Observations / Blockers:**
+- Rust with Iroh is even more complicated than what I've seen before, I'm groing to have to keep it as simple as possible for this to work.
+- The examples provided on the iroh computer GitHub repository are very helpful.
+
+**Next steps:**
+- Finish the Join an ad hoc iroh network part
+- Make sure to document this section properly
+- Start Advertise and fetch Parquet files from peers
+
+---
+
+### 27/05/2026
+
+**Work done:**
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+
 
 ## Weekly Summary 25/05 - 31/05
 
