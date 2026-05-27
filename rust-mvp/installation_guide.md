@@ -64,6 +64,7 @@ tracing-subscriber = "0.3"
 ## 3. todo
 > iroh-blobs: https://docs.iroh.computer/protocols/blobs    
 iroh-blobs example: transfer.rs https://github.com/n0-computer/iroh-blobs/blob/main/examples/transfer.rs    
+sendme (iroh blobs file transfer example) https://github.com/n0-computer/sendme
 
 
 
