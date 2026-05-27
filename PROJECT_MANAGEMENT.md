@@ -307,6 +307,21 @@ If possible, I'll try to finish the Rust MVP (non Docker version). With all the 
 ### 27/05/2026
 
 **Work done:**
+- Finish code for join an ad-hoc iroh network
+- Progress in the documentation
+- Research on the "network" functionality of this component (QUIC, NAT, hole punching, ...)
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+- Finish the installation guide on join an ad-hoc iroh network
+- Start the section on Parquet file exchange
+
+---
+
+### 28/05/2026
+
+**Work done:**
 
 **Decisions / Observations / Blockers:**
 
