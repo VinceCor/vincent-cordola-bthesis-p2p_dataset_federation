@@ -1,6 +1,6 @@
 mod node;
 use iroh::{EndpointAddr, PublicKey};
-use std::{env, iter::Skip};
+use std::{env};
 
 
 #[tokio::main]
