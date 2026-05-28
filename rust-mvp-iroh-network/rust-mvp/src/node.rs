@@ -8,6 +8,7 @@ References:
     iroh example listen.rs: https://github.com/n0-computer/iroh/blob/main/iroh/examples/listen.rs
     iroh example connect.rs: https://github.com/n0-computer/iroh/blob/main/iroh/examples/connect.rs
     iroh sendme example: https://github.com/n0-computer/sendme
+    iroh protocols: https://docs.iroh.computer/concepts/protocols
 */
 use iroh::{Endpoint, EndpointAddr, endpoint::presets};
 use n0_error::{Result, StdResultExt};

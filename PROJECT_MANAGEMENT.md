@@ -322,6 +322,22 @@ If possible, I'll try to finish the Rust MVP (non Docker version). With all the 
 ### 28/05/2026
 
 **Work done:**
+- Progress on the installation guide
+- Documentation about the manifest
+
+**Decisions / Observations / Blockers:**
+- For the manifest, I'll be able to use / modify from what's been done for data lakehouse (for example, with Apache Iceberg).
+- I'm currently using iroh relays for hole punching between endpoints. I shouldn't have any network issues for the rest of the projet. We'll see how it goes.
+
+**Next steps:**
+- Finish installation guide for join an ad-hoc iroh network
+- Start advertise / fetch Parquet from peers
+
+---
+
+### 29/05/2026
+
+**Work done:**
 
 **Decisions / Observations / Blockers:**
 
