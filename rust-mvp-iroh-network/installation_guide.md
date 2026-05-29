@@ -231,11 +231,19 @@ pub async fn listen() -> Result<()> {
     Ok(())
 }
 ```
-**Creating the endpoint**
+> References: [iroh docs, endpoint accept](https://docs.rs/iroh/latest/iroh/endpoint/struct.Endpoint.html#method.accept) and [iroh::endpoint Struct connexion](https://docs.rs/iroh/latest/iroh/endpoint/struct.Connection.html)
 
-**Displaying the address**
+**Creating the endpoint**   
+`Endpoint::builder(presets::N0)` create an endpoint configured with the default settings: relay servers enabled, DNS discovery enabled. `.alpns(vec![ALPN.to_vec()])` is required on the listener side. Without it, iroh rejects all incoming connections.
 
-**Accept loop**
+
+**Displaying the address**  
+`endpoint.addr().id` is the local node's `PublicKey`. This is the value that the user of terminal B must use. It uniquely and permanently identifies the node on the iroh network.
+
+
+**Accept loop**     
+`endpoint.accept().await` blocks until the next incoming connection. The `while let Some` loop runs indefinitely, the `None` value is only returned if the endpoint is explicitly closed. `incoming.await` completes the TLS/QUIC handshake: at this point, the connection is encrypted and authenticated. `conn.remote_id()` returns the remote peer's `PublicKey`.
+
 
 **`connect` mode, connect to a peer**
 ```Rust
@@ -256,23 +264,30 @@ pub async fn connect(addr: EndpointAddr) -> Result<()> {
 }
 ```
 
-**Creating the endpoint**
+**Creating the endpoint**   
+On the connector side, there's no need to decale ALPN, this is only required to accept incoming connections.
 
 **Establishing the connection**
+`endpoint.connect(addr, ALPN).await?` is the central call. Iroh handles all network complexity, it first attempts a direct connection, uses hole punching if necessary, and falls back to the relay server if no direct connection is possible. The `ALPN` passed here must match exactly the one declared by the listener
 
 **Closing the connection**
+> References: [QUIC RFC 9000](https://www.rfc-editor.org/info/rfc9000/#section-10.2)
+
+`conn.close(0u32.into(),b"Connection close!")` sends a QUIC CONNECTION_CLOSE frame. `endpoint.close().await` is asynchronous and waits for all pending messages to be sent before closing the UDP socket. WIthout this call, the closure might be truncated.
 
 
 
 ### 2.5 Result
+In this section, we will attempt to establish a connection between two endpoint. To do this, we will use two terminals.
 
-
+First, we launch our `listen` function `cargo run -- listen`. We can see our `EndpointId`and `PublicKey` (highlighted in yellow), and later we'll also be able to see the other peer's `EndpointId`.
 ![iroh network listen](media/iroh_network_listen.png)
+
+Once our `listen` is up and running, we can run our `connect` function in the second terminal. You'll need to specify the `PublicKey`retrieved from our first endpoint `cargo run -- connect <PublicKey>`. When you run the command, you'll see in the first terminal that the connection has been successfully established.
 
 ![iroh network connect](media/iroh_network_connect.png)
 
-
-
+In both terminals, we can see that each `EndpointId` is present. This confirms that our two endpoints were able to communicate successfully.
 
 
 
