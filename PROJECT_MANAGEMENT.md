@@ -30,8 +30,8 @@ This document will evolve as the project progresses, and the initial information
 | W3-W6 | **2. Core P2P sharing prototype** | 25.05 - 21.06 | |
 | **Milestone** | Rust MVP: (i) join an ad-hoc iroh network, (ii) advertise Parquet files, and (iii) fetch Parquet files from peers. | 31.05 | In progress |
 | Task | Setting up the Rust project | 31.05 | Done |
-| Task | Join an ad hoc iroh network | 31.05 | In progress |
-| Task | Advertise and fetch Parquet files from peers | 31.05 | Upcoming |
+| Task | Join an ad hoc iroh network | 31.05 | Done |
+| Task | Advertise and fetch Parquet files from peers | 31.05 | In progress |
 | Task | End-to-end test on two terminals (same machine) | 31.05 | Upcoming |
 | **Milestone** | Validation on a Docker Compose network of 3–5 containers. | 21.06 | Upcoming |
 | W7-W10 | **3. Python/Jupyter integration and connectivity validation** | 22.06 - 19.07 | |
@@ -181,7 +181,7 @@ This document will evolve as the project progresses, and the initial information
 - Start logical topology
 ---
 
-## Weekly Summary 11/05 - 15/05
+## Weekly Summary 11/05 - 17/05
 
 **Abstract**
 During this first week, i began laying the groundwork for the project. It was a bit of a struggle to get started and stay focused after moving to a new country. However, i was still able to make a good start on the planning, which will help me with the project's ongoing progress.
@@ -338,18 +338,33 @@ If possible, I'll try to finish the Rust MVP (non Docker version). With all the 
 ### 29/05/2026
 
 **Work done:**
+- Finish Join an ad hoc iroh network
+- Documentation for the advertise and fetch parquet file
+- Start parquet implementation.
 
 **Decisions / Observations / Blockers:**
+- Since I'm currently on track with my planning, I'm taking the time to focus a bit more on how I'll manage my files. To do this, I plan to use the Serde framwork to manage my manifests. This will provide a robust validation of my files right from the start and make any future changes easier.
 
 **Next steps:**
+- Continue advertise Parquet files, and fetch Parquet files from peers.
 
 
 ## Weekly Summary 25/05 - 31/05
 
 **Abstract**
+THe first use/implementation of iroh was a success. I was able to connect right away, and as a bonus, any firewall or other issues are already resolved. NAT hole punching is already handled by the iroh servers. This allows us to establish connections beyond the LAN without having to set up port forwarding or route our data through relay servers. The iroh relay server is there solely for the handshake.
+
+**Next week**
+- Finish advertise Parquet files, and fetch Parquet files from peers.
+- Start test in docker environment 
+
+## Weekly Summary 01/06 - 07/05
+
+**Abstract**
 
 
 **Next week**
+
 
 <!-- journal tempalte
 
