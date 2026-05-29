@@ -5,7 +5,10 @@ edition = "2024"
 
 [dependencies]
 iroh = "0.98.2"
+iroh-blobs = "0.98.0"
 tokio = { version = "1", features = ["full"] }
 anyhow = "1"
 n0-error = "0.1"
 tracing-subscriber = "0.3"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

@@ -290,8 +290,10 @@ Once our `listen` is up and running, we can run our `connect` function in the se
 In both terminals, we can see that each `EndpointId` is present. This confirms that our two endpoints were able to communicate successfully.
 
 
+## 3. Advertise and fetch Parquet files
 
-## 3. todo
+
+## x. todo
 > iroh-blobs: https://docs.iroh.computer/protocols/blobs    
 iroh-blobs example: transfer.rs https://github.com/n0-computer/iroh-blobs/blob/main/examples/transfer.rs    
 sendme (iroh blobs file transfer example) https://github.com/n0-computer/sendme
@@ -299,7 +301,8 @@ sendme (iroh blobs file transfer example) https://github.com/n0-computer/sendme
 **temp manifest document ressources**
 - https://learn.microsoft.com/en-us/common-data-model/sdk/manifest
 - https://iceberg.apache.org/spec/#overview
-
+- https://serde.rs/
+- https://github.com/serde-rs/json
 
 
 ## References
