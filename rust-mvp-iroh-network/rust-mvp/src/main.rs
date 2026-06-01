@@ -23,10 +23,27 @@ async fn main() -> anyhow::Result<()> {
             node::connect(addr).await?;
         }
 
+        // file transfer
+        Some("listen-blobs") => {
+            // Process all .parquet files in the data/ directory. Displaying one ticket per file
+            // and then waits indefinitely for incoming connections
+            node::listen_blobs().await?;
+        }
+
+        Some("fetch-blobs") => {
+            let tickets: Vec<String> = args[2..].to_vec();
+            if tickets.is_empty() {
+                eprintln!("Usage: cargo run -- fetch-blobs <ticket1> ...");
+                std::process::exit(1);
+            }
+        }
+
         _ => {
             eprintln!("Usage:");
             eprintln!("cargo run -- listen");
-            eprintln!("cargo run -- connect <EndpointId>")
+            eprintln!("cargo run -- connect <EndpointId>");
+            eprintln!("cargo run -- listen-blobs");
+            eprintln!("cargo run -- fetch-blobs <ticket1> ...")
         }
     }
     Ok(())

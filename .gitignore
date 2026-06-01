@@ -1,3 +1,5 @@
 rust-mvp-iroh-network/rust-mvp/target/
+rust-mvp-iroh-network/rust-mvp/data/
+rust-mvp-iroh-network/rust-mvp/cache/
 rust-mvp-iroh-network/rust-mvp/Cargo.lock
 .vscode/

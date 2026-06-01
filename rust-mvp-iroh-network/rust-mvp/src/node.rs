@@ -1,20 +1,24 @@
 /* 
-`node.rs` exposes two public functions and a constant. The ALPN constant
-is shared between the two functions, it is the protocol identifier
-that allows the two peers to recognize each other.
-
+`node.rs` exposes four public functions and a constant.
 References: 
     Creating an Endpoint: https://docs.iroh.computer/connecting/creating-endpoint 
     iroh example listen.rs: https://github.com/n0-computer/iroh/blob/main/iroh/examples/listen.rs
     iroh example connect.rs: https://github.com/n0-computer/iroh/blob/main/iroh/examples/connect.rs
     iroh sendme example: https://github.com/n0-computer/sendme
     iroh protocols: https://docs.iroh.computer/concepts/protocols
+    iroh blobs: https://docs.iroh.computer/protocols/blobs
+    iroh tickets: https://docs.iroh.computer/concepts/tickets
+    iroh example transfer.rs: https://github.com/n0-computer/iroh-blobs/blob/main/examples/transfer.rs
 */
-use iroh::{Endpoint, EndpointAddr, endpoint::presets};
+use iroh::{Endpoint, EndpointAddr, endpoint::presets, protocol::Router};
+use iroh_blobs::{store::mem::MemStore, ticket::BlobTicket, BlobsProtocol};
 use n0_error::{Result, StdResultExt};
+use std::path::PathBuf;
+use futures::future::join_all;
 
 // Example ALPN use to communicate over the `Endpoint`. Taken from https://github.com/n0-computer/iroh/blob/main/iroh/examples/listen.rs
 pub const ALPN: &[u8] = b"p2p-parquet/0";
+
 
 // Listen mode, waiting for connections
 pub async fn listen() -> Result<()> {
@@ -56,6 +60,60 @@ pub async fn connect(addr: EndpointAddr) -> Result<()> {
     // Connexion closed
     conn.close(0u32.into(),b"Connection close!");
     endpoint.close().await;
+
+    Ok(())
+}
+
+// listen_blobs: Process all .parquet files in the data/ directory. Displaying one ticket per file...
+pub async fn listen_blobs() -> Result<()> {
+    // Create the iroh endpoint
+    let endpoint = Endpoint::bind(presets::N0).await?;
+
+    let addr = endpoint.addr();
+    println!("Listener: {addr:?}");
+
+    // Create the in-memory store and the blob protocol
+    let store = MemStore::new();
+    let blobs = BlobsProtocol::new(&store, None);
+
+    // Hash all .parquet files in data/, for each file, iroh-blobs calculates its BLAKE3 hash
+    let data_dir = PathBuf::from("data");
+    let mut entries = tokio::fs::read_dir(&data_dir)
+        .await
+        .std_context("Unable to read data/ folder")?;
+
+    println!("File hashing in data/");
+    while let Some(entry) = entries.next_entry().await.std_context("Error reading entry")? {
+        let path = entry.path();
+        if path.extension().and_then(|e| e.to_str()) == Some("parquet") {
+            let abs_path = path.canonicalize().std_context("Absolute path not found")?;
+            let filename = path.file_name().unwrap().to_string_lossy().to_string();
+
+            // add_path hashes the file and returns a tag (hash + format)
+            // The "tag" prevents the store's garbage collector from deleting the blob
+            let tag = store.blobs().add_path(abs_path).await
+                .std_context("Error during hashing")?;
+
+            // BlobTicket -> Blake 3 hash of the file + listener's EndpointId
+            // The only information the connector needs to fetch
+            let ticket = BlobTicket::new(endpoint.id().into(), tag.hash, tag.format);
+            println!(" [{}] ticket: {}", filename,ticket);
+
+        }
+    }
+
+    // Start the Router
+    // The router replaces the loop `while let Some(incoming)` from fn listen()
+    // It accepts incoming connections and routes them to iroh-blobs via ALPN
+    let router = Router::builder(endpoint)
+        .accept(iroh_blobs::ALPN, blobs)
+        .spawn();
+
+    println!("Waiting for connections");
+
+    // Wait for Ctrl+C for to exit properly
+    tokio::signal::ctrl_c().await.std_context("Signal Ctrl+C")?;
+    router.shutdown().await.std_context("Error shutdown")?;
 
     Ok(())
 }

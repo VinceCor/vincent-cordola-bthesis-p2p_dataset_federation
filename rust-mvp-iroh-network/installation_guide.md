@@ -298,11 +298,6 @@ In both terminals, we can see that each `EndpointId` is present. This confirms t
 iroh-blobs example: transfer.rs https://github.com/n0-computer/iroh-blobs/blob/main/examples/transfer.rs    
 sendme (iroh blobs file transfer example) https://github.com/n0-computer/sendme
 
-**temp manifest document ressources**
-- https://learn.microsoft.com/en-us/common-data-model/sdk/manifest
-- https://iceberg.apache.org/spec/#overview
-- https://serde.rs/
-- https://github.com/serde-rs/json
 
 
 ## References
