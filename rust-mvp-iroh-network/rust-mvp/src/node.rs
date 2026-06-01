@@ -153,6 +153,8 @@ pub async fn fetch_blobs(raw_tickets: Vec<String>) -> Result <()> {
 
         // File name: truncated hash + .parquet extension
         let filename = format!("{}.parquet", &ticket.hash().to_string()[..16]);
+
+        // This section (dest) was created using Claude ai
         let dest = cache_dir.canonicalize()
             .std_context("Cannot resolve cache/ to absolute path")?
             .join(&filename);

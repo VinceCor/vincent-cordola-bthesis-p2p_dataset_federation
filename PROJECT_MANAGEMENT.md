@@ -32,7 +32,7 @@ This document will evolve as the project progresses, and the initial information
 | Task | Setting up the Rust project | 31.05 | Done |
 | Task | Join an ad hoc iroh network | 31.05 | Done |
 | Task | Advertise and fetch Parquet files from peers | 31.05 | In progress |
-| Task | End-to-end test on two terminals (same machine) | 31.05 | Upcoming |
+| Task | End-to-end test on two terminals (same machine) | 31.05 | In progress |
 | **Milestone** | Validation on a Docker Compose network of 3–5 containers. | 21.06 | Upcoming |
 | W7-W10 | **3. Python/Jupyter integration and connectivity validation** | 22.06 - 19.07 | |
 | **Milestone** | Python client layer: a unified Jupyter interface ensuring required files are present locally via on-demand retrieval. | 19.07 | Upcoming |
@@ -75,19 +75,25 @@ This document will evolve as the project progresses, and the initial information
 
 
 ## 3. Reviews and Meetings 
-### Meeting - [DATE]
+### Meeting - 01/06/2026
 
-**Participants:** Vincent Cordola - x   
-**Type:**   
-**Duration:** _ min
+**Participants:** Prof. Oscar Esteban - Vincent Cordola     
+**Type:** Overview of the project's progress  
+**Duration:** 30 min
 
 **Discussion points**
-- _
+- Presentation of the planning and the project's progress
+- Current progress on the Rust component and potential additional features
+- Potential inclusion of DuckDB to the project (mention in the project pdf)
 
 **Decisions made**
-- _
+- Overall, the project is progressing very well
+- Stick to the features listed in the PDF, don't get sidetracked by extra features. These could be added once the "main" project is finished
+- It remains to be seen whether DuckDB can be easily integrated and wheter that would be useful
 
 <!-- Reviews and Meetings template
+### Meeting - [Date]
+
 **Participants:** Vincent Cordola - x   
 **Type:**   
 **Duration:** _ min
@@ -262,7 +268,6 @@ During this first week, i began laying the groundwork for the project. It was a 
 **Next steps:**
 - Continue the rust-mvp
 
----
 
 ## Weekly Summary 18/05 - 24/05
 
@@ -357,6 +362,32 @@ THe first use/implementation of iroh was a success. I was able to connect right 
 **Next week**
 - Finish advertise Parquet files, and fetch Parquet files from peers.
 - Start test in docker environment 
+
+---
+
+### 01/06/2026
+
+**Work done:**
+- Code for advertise and fetch parquet file
+- Test on two terminals
+
+**Decisions / Observations / Blockers:**
+- Focus on the points specifically mentioned in the PDF and don't start working on a manifest file
+
+**Next steps:**
+- Complete the documentation for advertise and fetch parquet file
+- Start Docker if possible
+
+---
+
+### 02/06/2026
+
+**Work done:**
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+
 
 ## Weekly Summary 01/06 - 07/05
 
