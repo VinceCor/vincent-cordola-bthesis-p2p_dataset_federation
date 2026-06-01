@@ -36,6 +36,7 @@ async fn main() -> anyhow::Result<()> {
                 eprintln!("Usage: cargo run -- fetch-blobs <ticket1> ...");
                 std::process::exit(1);
             }
+            node::fetch_blobs(tickets).await?;
         }
 
         _ => {

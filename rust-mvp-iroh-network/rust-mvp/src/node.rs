@@ -14,7 +14,6 @@ use iroh::{Endpoint, EndpointAddr, endpoint::presets, protocol::Router};
 use iroh_blobs::{store::mem::MemStore, ticket::BlobTicket, BlobsProtocol};
 use n0_error::{Result, StdResultExt};
 use std::path::PathBuf;
-use futures::future::join_all;
 
 // Example ALPN use to communicate over the `Endpoint`. Taken from https://github.com/n0-computer/iroh/blob/main/iroh/examples/listen.rs
 pub const ALPN: &[u8] = b"p2p-parquet/0";
@@ -69,8 +68,7 @@ pub async fn listen_blobs() -> Result<()> {
     // Create the iroh endpoint
     let endpoint = Endpoint::bind(presets::N0).await?;
 
-    let addr = endpoint.addr();
-    println!("Listener: {addr:?}");
+    println!("Listener: {:?}", endpoint.addr());
 
     // Create the in-memory store and the blob protocol
     let store = MemStore::new();
@@ -114,6 +112,62 @@ pub async fn listen_blobs() -> Result<()> {
     // Wait for Ctrl+C for to exit properly
     tokio::signal::ctrl_c().await.std_context("Signal Ctrl+C")?;
     router.shutdown().await.std_context("Error shutdown")?;
+
+    Ok(())
+}
+
+// fetch_blobs: download the files associated with the tickets to cache/
+pub async fn fetch_blobs(raw_tickets: Vec<String>) -> Result <()> {
+    // Create the endpoint and store on the connector side
+    let endpoint = Endpoint::bind(presets::N0).await?;
+
+    println!("Connector: {:?}", endpoint.addr());
+
+    let store = MemStore::new();
+
+    // Create the cache/ folder if it doesn't exist
+    let cache_dir = PathBuf::from("cache");
+    tokio::fs::create_dir_all(&cache_dir)
+        .await
+        .std_context("Unable to create cache/")?;
+
+    // Parse tickets and prepare downloads
+    // The downloader coordinates requests to one or more peers.
+    // Reusing the same downloader for multiple files is more efficient because iroh can reuse the already-open QUIC connection.
+    let downloader = store.downloader(&endpoint);
+
+    let mut ticket_list: Vec<BlobTicket> = Vec::new();
+
+    for raw in &raw_tickets {
+        let ticket: BlobTicket = raw.parse().std_context("Invalid ticket")?;
+        ticket_list.push(ticket);
+    }
+
+    println!("Start downloads ({} files)", ticket_list.len());
+
+    for (i, ticket) in ticket_list.iter().enumerate() {
+        downloader
+            .download(ticket.hash(), Some(ticket.addr().id))
+            .await
+            .std_context("Error during download")?;
+
+        // File name: truncated hash + .parquet extension
+        let filename = format!("{}.parquet", &ticket.hash().to_string()[..16]);
+        let dest = cache_dir.canonicalize()
+            .std_context("Cannot resolve cache/ to absolute path")?
+            .join(&filename);
+
+        // export() copies the blob from MemStore to the file system
+        store.blobs().export(ticket.hash(), dest.clone()).await
+            .std_context("Error during export")?;
+
+        println!(" [{}] cache/{}", i + 1, filename);
+    }
+
+    println!("All files are in cache/");
+
+    endpoint.close().await;
+
 
     Ok(())
 }
