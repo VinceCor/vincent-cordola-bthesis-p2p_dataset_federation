@@ -31,6 +31,10 @@ The Node Agent is the only component that communicates with iroh-blobs protocol.
 | PyO3 | Bindings Python/Rust | [PyO3](https://pyo3.rs/v0.28.3/) |
 | iroh-gossip (not implemented) | Manifest propagation between nodes | [iroh-gossip](https://docs.iroh.computer/connecting/gossip) | 
 
+https://docs.iroh.computer/concepts/nat-traversal   
+https://docs.iroh.computer/protocols/using-quic
+
+
 ---
 
 ### 1.2 Parquet Files

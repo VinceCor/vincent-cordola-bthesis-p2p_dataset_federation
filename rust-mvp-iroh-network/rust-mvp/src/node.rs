@@ -81,6 +81,7 @@ pub async fn listen_blobs() -> Result<()> {
         .std_context("Unable to read data/ folder")?;
 
     println!("File hashing in data/");
+    // The `while let Some` section whas created using Claude chatbot
     while let Some(entry) = entries.next_entry().await.std_context("Error reading entry")? {
         let path = entry.path();
         if path.extension().and_then(|e| e.to_str()) == Some("parquet") {

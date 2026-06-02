@@ -91,6 +91,25 @@ This document will evolve as the project progresses, and the initial information
 - Stick to the features listed in the PDF, don't get sidetracked by extra features. These could be added once the "main" project is finished
 - It remains to be seen whether DuckDB can be easily integrated and wheter that would be useful
 
+
+
+### Meeting - 02/06/2026
+
+**Participants:** Vincent Cordola - Origami lab     
+**Type:** Presentation project overall
+**Duration:** 20 min
+
+**Discussion points**
+- General information about the project / bachelor thesis
+- More details about the p2p.
+- Speaking about the potential implementation, problems that may arise
+
+**Decisions made**
+- _
+
+**media**
+- [Introduction p2p projet](doc/media/bthesis_proj_intro.pdf)
+
 <!-- Reviews and Meetings template
 ### Meeting - [Date]
 
@@ -213,7 +232,6 @@ During this first week, i began laying the groundwork for the project. It was a 
 ### 19/05/2026
 
 **Work done:**
-- Presentation of my project at the lab [Introduction p2p projet](doc/media/bthesis_proj_intro.pdf)
 - Converstation with Dr. Nikhil Bhagwat about QC studio
 - Modification of the data layout convention document
 
@@ -383,10 +401,15 @@ THe first use/implementation of iroh was a success. I was able to connect right 
 ### 02/06/2026
 
 **Work done:**
+- Presentation of my project at the lab [Introduction p2p projet](doc/media/bthesis_proj_intro.pdf)
+- Continue the installation guide for listen-blobs and fetch-blobs
 
 **Decisions / Observations / Blockers:**
+- Provide a clear description of the system architecture (how the NAT hole punching works...)
 
 **Next steps:**
+- Finish installation guide and update system architecture with this part
+- Start Docker
 
 
 ## Weekly Summary 01/06 - 07/05

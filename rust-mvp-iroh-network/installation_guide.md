@@ -291,8 +291,9 @@ In both terminals, we can see that each `EndpointId` is present. This confirms t
 
 
 ## 3. Advertise and fetch Parquet files
-
+> References: [iroh-blobs](https://docs.iroh.computer/protocols/blobs), [transfer.rs](https://github.com/n0-computer/iroh-blobs/blob/main/examples/transfer.rs), [iroh Sendme](https://github.com/n0-computer/sendme)
 ### 3.1 main.rs change
+Two new CLI modes are added to `main.rs`,
 ```Rust
 // file transfer
 Some("listen-blobs") => {
@@ -311,7 +312,32 @@ Some("fetch-blobs") => {
 }
 ```
 
+`listen-blobs`
+```Rust
+Some("listen-blobs") => {
+    node::listen_blobs().await?;
+}
+```
+No arguments are needed. The listener scans /data itself and generates one ticket per file.
+
+
+`fetch-blobs`
+```Rust
+Some("fetch-blobs") => {
+    let tickets: Vec<String> = args[2..].to_vec();
+    if tickets.is_empty() {
+        eprintln!("Usage: cargo run -- fetch-blobs <ticket1> ...");
+        std::process::exit(1);
+    }
+    node::fetch_blobs(tickets).await?;
+}
+```
+`args[2..]` slices the argument list starting from the third element (index 2), skipping binary name (index 0) and the `fetch-blobs` command.   
+
+
+
 ### 3.2 node.rs listen_blobs()
+> References: [iroh Tickets](https://docs.iroh.computer/concepts/tickets),[Blob ticket](https://docs.rs/iroh-blobs/latest/iroh_blobs/ticket/struct.BlobTicket.html), [Iroh Router](https://docs.rs/iroh/latest/iroh/protocol/struct.Router.html)
 ```Rust
 // listen_blobs: Process all .parquet files in the data/ directory. Displaying one ticket per file...
 pub async fn listen_blobs() -> Result<()> {
@@ -331,13 +357,15 @@ pub async fn listen_blobs() -> Result<()> {
         .std_context("Unable to read data/ folder")?;
 
     println!("File hashing in data/");
+    // The `while let Some` section whas created using Claude chatbot
     while let Some(entry) = entries.next_entry().await.std_context("Error reading entry")? {
         let path = entry.path();
         if path.extension().and_then(|e| e.to_str()) == Some("parquet") {
+            // `canonicalize` resolves the path to an absolute, canonical form
             let abs_path = path.canonicalize().std_context("Absolute path not found")?;
             let filename = path.file_name().unwrap().to_string_lossy().to_string();
 
-            // add_path hashes the file and returns a tag (hash + format)
+            // add_path hashes the file and returns a tag (hash + format), requires an absolute path
             // The "tag" prevents the store's garbage collector from deleting the blob
             let tag = store.blobs().add_path(abs_path).await
                 .std_context("Error during hashing")?;
@@ -366,6 +394,57 @@ pub async fn listen_blobs() -> Result<()> {
     Ok(())
 }
 ```
+**Creating the endpoint**
+```Rust
+let endpoint = Endpoint::bind(presets::N0).await?;
+```
+Unlike `listen()` in section 2, there is no `.alpns(vec![...])` call here. This is because the ALPN is now declared at the `Router` level.
+
+**Creating the store and the blobs protocol**
+```Rust
+let store = MemStore::new();
+let blobs = BlobsProtocol::new(&store, None);
+```
+`MemStore`is an in-memory blob store. It holds the file data and the BLAKE3 metadata. The store lives for the duration of the program.  
+`BlobsProtocol::new(&store, None)` wraps the store into a protocol handler. This is the object that will be given to the `Router` to handle incoming blob requests.
+
+**Scanning and hashing the files**
+```Rust
+let data_dir = PathBuf::from("data");
+let mut entries = tokio::fs::read_dir(&data_dir)
+    .await
+    .std_context("Unable to read data/ folder")?;
+```
+`PathBuf::from("data")` creates a relative path.    
+`tokio::fs::read_dir` opens a directory stream without blocking the Tokio runtimes.
+
+```Rust
+if path.extension().and_then(|e| e.to_str()) == Some("parquet") 
+```
+The `if` filter uses `path.extension()` which returns `Option<&OsStr>`. `and_then(|e| e.to_str())` converts it to `Option<&str>`, and comparing to `Some("parquet")` ensures only `.parquet` files are processed. Any other file in `data/` is skipped.
+
+**Hasing a file and producing its ticket**
+```Rust
+let tag = store.blobs().add_path(abs_path).await
+    .std_context("Error during hashing")?;
+```
+`add_path` reads the file, computes its BLAKE3 hash, store the outboard metadata in the `MemStore`, and returns a `Tag`.The `Tag`contains two fileds: `tag.hash` (the 32-byte BLAKE3 root hash that uniquely identifies the file's content) and tag.format (`raw` for a single blob).   
+Keeping the `tag` alive in the store is important: iroh-blobs has a garbage collector, and a blob with no live tag reference is eligible for deletion. 
+
+```Rust
+let ticket = BlobTicket::new(endpoint.id().into(), tag.hash, tag.format);
+```
+`BlobTicket` encodes three things into a single shareable string: endpoint address (node ID, relay URL, and direct addresses) plus optional application-specifif data like a document ID or blob hash. References: [iroh tickets](https://docs.iroh.computer/concepts/tickets)
+
+
+**Starting the Router**
+```Rust
+let router = Router::builder(endpoint)
+    .accept(iroh_blobs::ALPN, blobs)
+    .spawn();
+```
+The `Router` replaces the manual `while let Some(incoming) = endpoint.accept().await` from section 2's `listen()`. It runs the accept loop in the background and routes each incoming connection to the coorect protocol handler based on the ALPN string.  
+`.spawn()` launches the router as a background Tokio task.
 
 ### 3.3 node.rs fetch_blobs()
 ```Rust
@@ -428,11 +507,34 @@ pub async fn fetch_blobs(raw_tickets: Vec<String>) -> Result <()> {
 }
 ```
 
+**a**
+```Rust
+let endpoint = Endpoint::bind(presets::N0).await?;
+let store = MemStore::new();
+```
+The connector creates its own independent endpoint and its own `MemStore`. The store here acts as a download buffer: blobs are received and verified into memory first, then exported to disk in a second step.
 
-## x. todo
-> iroh-blobs: https://docs.iroh.computer/protocols/blobs    
-iroh-blobs example: transfer.rs https://github.com/n0-computer/iroh-blobs/blob/main/examples/transfer.rs    
-sendme (iroh blobs file transfer example) https://github.com/n0-computer/sendme
+**a**
+```Rust
+```
+
+**a**
+```Rust
+```
+
+**a**
+```Rust
+```
+
+**a**
+```Rust
+```
+
+**a**
+```Rust
+```
+
+
 
 
 

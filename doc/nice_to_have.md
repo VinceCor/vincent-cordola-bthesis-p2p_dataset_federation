@@ -12,4 +12,6 @@ This document outlines certain features that can bed added to this POC
 
 
 ## iroh
-- Create the cache/ data/ folders if they do not exist
+- File naming by hash
+- Iroh-gossip for discovery
+- Parquet partial-read optimization
