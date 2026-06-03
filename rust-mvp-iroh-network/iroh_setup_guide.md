@@ -573,7 +573,7 @@ pub async fn peer() -> Result<()> {
 
     println!("File hashing in data/");
 
-    // The `while let Some` section whas created using Claude chatbot
+    // The `while let Some` section whas created with the help Claude chatbot
     while let Some(entry) = entries.next_entry().await.std_context("Error reading entry")? {
         let path = entry.path();
         if path.extension().and_then(|e| e.to_str()) == Some("parquet") {

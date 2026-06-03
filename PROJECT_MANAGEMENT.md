@@ -34,7 +34,11 @@ This document will evolve as the project progresses, and the initial information
 | Task | Advertise and fetch Parquet files from peers | 05.06 | Done |
 | Task | End-to-end test on two terminals (same machine) | 05.06 | Done |
 | Task | Listen and fetch in parallel | 05.06 | Done |
-| **Milestone** | Validation on a Docker Compose network of 3–5 containers. | 21.06 | Upcoming |
+| **Milestone** | Validation on a Docker Compose network of 3–5 containers. | 21.06 | In progress |
+| Task | Write the Dockerfile | 21.06 | Upcoming |
+| Task | Write the docker-compose.yml | 21.06 | Upcoming |
+| Task | Manual ticket exchange | 21.06 | Upcoming |
+| Task | End-to-end validation | 21.06 | Upcoming |
 | W7-W10 | **3. Python/Jupyter integration and connectivity validation** | 22.06 - 19.07 | |
 | **Milestone** | Python client layer: a unified Jupyter interface ensuring required files are present locally via on-demand retrieval. | 19.07 | Upcoming |
 | **Milestone** | Migrate the testbed to virtual machines with separate network stacks to exercise NAT traversal and relay fallback for the first time. | 19.07 | Upcoming |
@@ -424,6 +428,8 @@ THe first use/implementation of iroh was a success. I was able to connect right 
 - Iroh setup is a first version, add iroh gossip and file naming would be very useful
 
 **Next steps:**
+- Update system architecture for iroh part (nat hole punching explanation...)
+- Start docker part
 
 ---
 
