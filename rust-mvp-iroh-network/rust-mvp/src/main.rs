@@ -39,12 +39,17 @@ async fn main() -> anyhow::Result<()> {
             node::fetch_blobs(tickets).await?;
         }
 
+        Some("peer") => {
+            node::peer().await?;
+        }
+
         _ => {
             eprintln!("Usage:");
             eprintln!("cargo run -- listen");
             eprintln!("cargo run -- connect <EndpointId>");
             eprintln!("cargo run -- listen-blobs");
-            eprintln!("cargo run -- fetch-blobs <ticket1> ...")
+            eprintln!("cargo run -- fetch-blobs <ticket1> ...");
+            eprintln!("cargo run -- peer")
         }
     }
     Ok(())
