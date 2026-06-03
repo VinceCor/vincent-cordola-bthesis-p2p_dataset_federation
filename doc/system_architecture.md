@@ -4,6 +4,8 @@ This document provides an overview of the components used in this project. It de
 This document will be updated throughout the project.
 
 ## Table of Contents
+1. [Global topology](#1-global-topology)
+
 
 ## 1. Global Topology
 Here is an overview of the project's overall architecture.
@@ -28,6 +30,10 @@ The Node Agent is the only component that communicates with iroh-blobs protocol.
 | iroh-blobs | Blob transfer | [iroh-blobs](https://docs.iroh.computer/protocols/blobs) |
 | PyO3 | Bindings Python/Rust | [PyO3](https://pyo3.rs/v0.28.3/) |
 | iroh-gossip (not implemented) | Manifest propagation between nodes | [iroh-gossip](https://docs.iroh.computer/connecting/gossip) | 
+
+https://docs.iroh.computer/concepts/nat-traversal   
+https://docs.iroh.computer/protocols/using-quic
+
 
 ---
 
