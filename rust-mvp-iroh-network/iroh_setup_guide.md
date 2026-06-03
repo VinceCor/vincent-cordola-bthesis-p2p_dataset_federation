@@ -477,6 +477,7 @@ pub async fn fetch_blobs(raw_tickets: Vec<String>) -> Result <()> {
 
     println!("Start downloads ({} files)", ticket_list.len());
 
+    // Downloading and exporting files
     for (i, ticket) in ticket_list.iter().enumerate() {
         downloader
             .download(ticket.hash(), Some(ticket.addr().id))
@@ -507,39 +508,73 @@ pub async fn fetch_blobs(raw_tickets: Vec<String>) -> Result <()> {
 }
 ```
 
-**a**
+**Creating the endpoint and store**
 ```Rust
 let endpoint = Endpoint::bind(presets::N0).await?;
 let store = MemStore::new();
 ```
 The connector creates its own independent endpoint and its own `MemStore`. The store here acts as a download buffer: blobs are received and verified into memory first, then exported to disk in a second step.
 
-**a**
+**Downloader**
 ```Rust
+let downloader = store.downloader(&endpoint);
+```
+`store.downloader(&endpoint)` create a `Downloader` bound to both the store and the endpoint. The `Downloader` is the object reponsible for opening iroh connections to providers and pulling blobs. Reusing the same `Download` instance acrross multiple downloads allows iroh to reuse the existing QUIC connection for the same peer, avoiding the overhead of a new handshake per file.
+
+### 3.3 Result
+For this test, we will also use two terminals, just as in the previous test.
+
+**Files**   
+To do this, I first created this file structure:
+```
+rust-mvp
+    cache/
+    data/
+        sample.parquet
+        sample2.parquet
+        sample3.parquet
+    src/
+        main.rs
+        node.rs
 ```
 
-**a**
-```Rust
-```
+**Listener**    
+First, we'll start the listener taht will make our Parquet files available as tickets.  
+`cargo run -- listen-blobs`
+![iroh listen-blobs](media/iroh_listen-blobs.png)
 
-**a**
-```Rust
-```
+**Connector**   
+Now we can launch our connector, which will be able to retrieve our tickets. To do this, we run our `fetch-blobs` command followed by the files we want to retrieve.
+![iroh fetch-blobs](media/iroh_fetch-blobs.png)
 
-**a**
-```Rust
-```
-
-**a**
-```Rust
-```
-
-
-
-
+This is an early version, so we have to enter the tickets manually. We'll be able to improve this in the future using iroh-gossip, which will allow us to automatically discover peers.     
+Another addition would be to have a file-naming convetion that allows us to see which file corresponds to which hash.
 
 ## References
+
 ##### R1 | [Rust and Cargo installation](https://doc.rust-lang.org/cargo/getting-started/installation.html)
 ##### R2 | [What is iroh?](https://docs.iroh.computer/what-is-iroh)
 ##### R3 | [iroh quickstart](https://docs.iroh.computer/quickstart)
 ##### R4 | [Creating an Endpoint](https://docs.iroh.computer/connecting/creating-endpoint)
+##### R5 | [iroh example listen.rs](https://github.com/n0-computer/iroh/blob/main/iroh/examples/listen.rs)
+##### R6 | [iroh example connect.rs](https://github.com/n0-computer/iroh/blob/main/iroh/examples/connect.rs)
+##### R7 | [tokio hello tutorial](https://tokio.rs/tokio/tutorial/hello-tokio)
+##### R8 | [Struct EndpointAddr](https://docs.rs/iroh/latest/iroh/struct.EndpointAddr.html)
+##### R9 | [iroh endpoint](https://docs.iroh.computer/concepts/endpoints)
+##### R10 | [iroh protocols](https://docs.iroh.computer/concepts/protocols)
+##### R11 | [wikipedia ALPN](https://en.wikipedia.org/wiki/Application-Layer_Protocol_Negotiation)
+##### R12 | [iroh docs, endpoint accept](https://docs.rs/iroh/latest/iroh/endpoint/struct.Endpoint.html#method.accept)
+##### R13 | [iroh::endpoint Struct Connection](https://docs.rs/iroh/latest/iroh/endpoint/struct.Connection.html)
+##### R14 | [QUIC RFC 9000](https://www.rfc-editor.org/info/rfc9000/#section-10.2)
+##### R15 | [iroh-blobs](https://docs.iroh.computer/protocols/blobs)
+##### R16 | [transfer.rs](https://github.com/n0-computer/iroh-blobs/blob/main/examples/transfer.rs)
+##### R17 | [iroh Sendme](https://github.com/n0-computer/sendme)
+##### R18 | [iroh Tickets](https://docs.iroh.computer/concepts/tickets)
+##### R19 | [Blob ticket](https://docs.rs/iroh-blobs/latest/iroh_blobs/ticket/struct.BlobTicket.html)
+##### R20 | [Iroh Router](https://docs.rs/iroh/latest/iroh/protocol/struct.Router.html)
+##### R21 | [iroh.computer](https://www.iroh.computer/)
+##### R22 | [tokio.rs](https://tokio.rs/)
+##### R23 | [anyhow error handling](https://google.github.io/comprehensive-rust/error-handling/anyhow.html)
+##### R24 | [Iroh compatible error handling](https://www.iroh.computer/blog/iroh-0-95-0-new-relay)
+##### R25 | [tracing-subscriber](https://docs.rs/tracing-subscriber/latest/tracing_subscriber/)
+

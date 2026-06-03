@@ -28,11 +28,12 @@ This document will evolve as the project progresses, and the initial information
 | Task | Report setup, GitHub page, planning | 24.05 | Done |
 | Task | logical topology (to get an overview of the project, first draft) | 24.05 | Done |
 | W3-W6 | **2. Core P2P sharing prototype** | 25.05 - 21.06 | |
-| **Milestone** | Rust MVP: (i) join an ad-hoc iroh network, (ii) advertise Parquet files, and (iii) fetch Parquet files from peers. | 31.05 | In progress |
+| **Milestone** | Rust MVP: (i) join an ad-hoc iroh network, (ii) advertise Parquet files, and (iii) fetch Parquet files from peers. | 05.06 | In progress |
 | Task | Setting up the Rust project | 31.05 | Done |
 | Task | Join an ad hoc iroh network | 31.05 | Done |
-| Task | Advertise and fetch Parquet files from peers | 31.05 | In progress |
-| Task | End-to-end test on two terminals (same machine) | 31.05 | In progress |
+| Task | Advertise and fetch Parquet files from peers | 05.06 | Done |
+| Task | End-to-end test on two terminals (same machine) | 05.06 | Done |
+| Task | Listen and fetch in parallel | 05.06 | In progress |
 | **Milestone** | Validation on a Docker Compose network of 3–5 containers. | 21.06 | Upcoming |
 | W7-W10 | **3. Python/Jupyter integration and connectivity validation** | 22.06 - 19.07 | |
 | **Milestone** | Python client layer: a unified Jupyter interface ensuring required files are present locally via on-demand retrieval. | 19.07 | Upcoming |
@@ -410,6 +411,28 @@ THe first use/implementation of iroh was a success. I was able to connect right 
 **Next steps:**
 - Finish installation guide and update system architecture with this part
 - Start Docker
+
+---
+
+### 03/06/2026
+
+**Work done:**
+- Finish iroh setup guide
+
+**Decisions / Observations / Blockers:**
+- Iroh setup is a first version, add iroh gossip and file naming would be very useful
+
+**Next steps:**
+
+---
+
+### 04/06/2026
+
+**Work done:**
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
 
 
 ## Weekly Summary 01/06 - 07/05

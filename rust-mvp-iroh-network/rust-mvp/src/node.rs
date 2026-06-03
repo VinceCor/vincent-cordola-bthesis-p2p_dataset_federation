@@ -146,6 +146,7 @@ pub async fn fetch_blobs(raw_tickets: Vec<String>) -> Result <()> {
 
     println!("Start downloads ({} files)", ticket_list.len());
 
+    // Downloading and exporting files
     for (i, ticket) in ticket_list.iter().enumerate() {
         downloader
             .download(ticket.hash(), Some(ticket.addr().id))
