@@ -29,7 +29,9 @@ This should print `Hello, world!`
 In this section, I'll show you how to connect two endpoints.
 
 ### 2.1 Dependencies
-Add dependencies (this can be done directory in Cargo.toml)
+> This version of Cargo allows you to run all the code included in the iroh_setup_guide. For the project itself, please refer directly to the project's Cargo.
+
+Add dependencies (this can be done directory in Cargo.toml).
 
 Cargo.toml:
 ```
@@ -40,10 +42,12 @@ edition = "2024"
 
 [dependencies]
 iroh = "0.98.2"
+iroh-blobs = "0.100.0"
 tokio = { version = "1", features = ["full"] }
 anyhow = "1"
 n0-error = "0.1"
 tracing-subscriber = "0.3"
+futures = "0.3"
 ```
 | Dependencies | Role |
 |--------------|------|

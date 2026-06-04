@@ -35,7 +35,7 @@ This document will evolve as the project progresses, and the initial information
 | Task | End-to-end test on two terminals (same machine) | 05.06 | Done |
 | Task | Listen and fetch in parallel | 05.06 | Done |
 | **Milestone** | Validation on a Docker Compose network of 3–5 containers. | 21.06 | In progress |
-| Task | Write the Dockerfile | 21.06 | Upcoming |
+| Task | Write the Dockerfile | 21.06 | In progress |
 | Task | Write the docker-compose.yml | 21.06 | Upcoming |
 | Task | Manual ticket exchange | 21.06 | Upcoming |
 | Task | End-to-end validation | 21.06 | Upcoming |
@@ -96,7 +96,7 @@ This document will evolve as the project progresses, and the initial information
 - Stick to the features listed in the PDF, don't get sidetracked by extra features. These could be added once the "main" project is finished
 - It remains to be seen whether DuckDB can be easily integrated and wheter that would be useful
 
-
+---
 
 ### Meeting - 02/06/2026
 
@@ -114,6 +114,30 @@ This document will evolve as the project progresses, and the initial information
 
 **media**
 - [Introduction p2p projet](doc/media/bthesis_proj_intro.pdf)
+
+---
+
+### Meeting - 04/06/2026
+
+**Participants:** Vincent Cordola - Dr. Sebastian Urchs - Dr. Nikhil Bhagwat    
+**Type:** Project overview, discussion of potential implementation options for existing projects    
+**Duration:** 60 min
+
+**Discussion points**
+- Project planning and Milestones
+- What will be possible to do with the current project (data accessible from the notebook...)? How will it be shared, and who will have access to that?
+- How might this apply to projects like Neurobagel? How could we implement this with more sensitive data? Is it possible to have different access levels for different files?
+- Implementation in another project: How can I share only part of a dataset rather than all the files in a node?
+
+**Decisions made**
+- As part of the PoC
+    - Potentially install DucDB to better query the file later
+    - The API (between the jupyeter and our data) will certainly allow us to select only a subset of the data from our Jupyter notebook.
+    - Data segmentation will likely not be done in Iroh part (so each peer will have all the data), which will make the data accessible on each node / more avaibility.
+- Following the PoC / implement in other projects
+    - Thanks to iroh's flexibility, this project can be adapted to different environments, but it will still require a lot of adjustment
+    - A particular version of Jupyter will likely be best suited for a specific type of data or projetct. But that remains to be seen once the project is complete.
+
 
 <!-- Reviews and Meetings template
 ### Meeting - [Date]
@@ -436,11 +460,24 @@ THe first use/implementation of iroh was a success. I was able to connect right 
 ### 04/06/2026
 
 **Work done:**
+- Make progress on the documentation for system_architecture
+- Reading documentation for the Docker part
+- Presentation/discussion/brainstorming on the project with Dr. Sebastian Urchs and Dr. Nikhil Bhagwat    
 
 **Decisions / Observations / Blockers:**
 
 **Next steps:**
+- Start implementation of the Docker part
 
+---
+
+### 05/06/2026
+
+**Work done:**
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
 
 ## Weekly Summary 01/06 - 07/05
 
