@@ -493,9 +493,26 @@ THe first use/implementation of iroh was a success. I was able to connect right 
 - Finish 2. Core P2P sharing prototype (docker part)
 - Start 3. Python/Jupyter integration and connectivity validation
 
+---
+
 ### 08/06/2026
 
 **Work done:**
+- Folder for the docker testbed
+- Start of the Dockerfile
+- Documentation about Rust with docker to create the simplest possible version
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+- Finish Dockerfile and docker-compose
+
+---
+
+### 09/06/2026
+
+**Work done:**
+
 
 **Decisions / Observations / Blockers:**
 

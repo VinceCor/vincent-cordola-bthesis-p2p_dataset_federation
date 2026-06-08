@@ -19,3 +19,5 @@ RUN cargo build --release
 
 # References for the image: https://kerkour.com/rust-docker-small-secure-images
 FROM debian::bookworm-slim AS runtime
+
+WORKDIR /app
