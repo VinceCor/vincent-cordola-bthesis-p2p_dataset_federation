@@ -700,6 +700,10 @@ while let Some(line) = lines.next_line().await... {...}
 ```
 `next_line().await` waits for the next line, but in the meantime it lets the other tasks run. The `.await` allows the Router to send files even when we haven't typed anything.
 
+## Validation on Docker Compose network 
+> Objective: Validate peer mode on a network of 3 to 5 isolated Docker containers using manual ticket exchange.
+
+
 ## References
 
 ##### R1 | [Rust and Cargo installation](https://doc.rust-lang.org/cargo/getting-started/installation.html)
