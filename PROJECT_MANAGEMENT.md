@@ -474,18 +474,39 @@ THe first use/implementation of iroh was a success. I was able to connect right 
 ### 05/06/2026
 
 **Work done:**
+- Search for the Docker section
+- Confirm the Iroh section
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+- Start Docker implementation
+
+## Weekly Summary 01/06 - 07/06
+
+**Abstract**
+- The Iroh component was completed with a very solid MVP already in place. Finally, the two functions were integrated into a Tokio runtime, which will be better suited for the rest of the project (a node can either listen or fetch). The addition of direct reading in the terminal will also allow us to fetch data continuously without blocking the program.
+- I was also able to hold two presentations/brainstorming sessions with the Origami Lab team regarding my project and its potential future implementation with other projects, which allowed me to step back from the project and ask myself questions I wouldn’t have necessarily thought of at first.
+
+
+**Next week**
+- Finish 2. Core P2P sharing prototype (docker part)
+- Start 3. Python/Jupyter integration and connectivity validation
+
+### 08/06/2026
+
+**Work done:**
 
 **Decisions / Observations / Blockers:**
 
 **Next steps:**
 
-## Weekly Summary 01/06 - 07/05
+## Weekly Summary 08/06 - 14/05
 
 **Abstract**
 
 
 **Next week**
-
 
 <!-- journal tempalte
 
