@@ -700,8 +700,34 @@ while let Some(line) = lines.next_line().await... {...}
 ```
 `next_line().await` waits for the next line, but in the meantime it lets the other tasks run. The `.await` allows the Router to send files even when we haven't typed anything.
 
-## Validation on Docker Compose network 
+## 5. Validation on Docker Compose network 
 > Objective: Validate peer mode on a network of 3 to 5 isolated Docker containers using manual ticket exchange.
+
+To do this, we're keeping only the peer function. The code is available here: [peer main](docker-testbed/src/main.rs), [peer node](docker-testbed/src/node.rs)
+
+The [Dockerfile](docker-testbed/Dockerfile) and [Docker compose](docker-testbed/docker-compose.yml) have been kept as simple as possible. The goal is simply to demonstrate that our solution works.
+
+### 5.1 Copy cargo files
+Copy the Cargo.lock file from the github repos or the mvp-rust repository to avoid any dependency issues.
+
+### 5.2 Build and launch
+```
+docker compose up --build -d
+docker compose ps # check that all 3 peers are "running"
+```
+
+### 5.3 Test
+First, retrieve the tickets manually. To do this, we'll check the logs in Peers.    
+```docker logs <peer>```
+
+![docker logs](media/docker_logs_peer.png)
+Next, we can open the terminal on our peer's machine to fetch the files.    
+```docker attach <peer>```
+![docker fetch](media/docker_fetch_peer.png)
+Finally, we can see that the files have been successfully downloaded
+![docker check](media/docker_check_cache.png)
+
+We can see that this is a success. We currently able to send and receive files from different peers. This confirms peers that I already have a functional foundation for the project. Adding Iroh-Gossip and other features may be considered in the future.
 
 
 ## References
