@@ -523,13 +523,28 @@ THe first use/implementation of iroh was a success. I was able to connect right 
 
 ---
 
-### 09/06/2026
+### 10/06/2026
 
 **Work done:**
 
 **Decisions / Observations / Blockers:**
 
 **Next steps:**
+
+---
+
+### 11/06/2026
+
+**Work done:**
+- Research on how to implement the API... (Axum)
+
+**Decisions / Observations / Blockers:**
+- It's hard to find a balance between keeping things simple enough to validate the PoC, but also finding something that can evolve in the future so we can continue / upgrade the project.
+- The goal, therefore, is to find the right balance in terms of complexity.
+
+**Next steps:**
+- Clearly defin the etechnical sutrcture of this part (API etc..) to get a better overview
+- Defining the tasks for this milestone. 
 
 ## Weekly Summary 08/06 - 14/05
 
