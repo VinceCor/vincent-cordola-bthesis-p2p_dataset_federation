@@ -555,16 +555,6 @@ THe first use/implementation of iroh was a success. I was able to connect right 
 ### 11/06/2026
 
 **Work done:**
-
-**Decisions / Observations / Blockers:**
-
-**Next steps:**
-
----
-
-### 12/06/2026
-
-**Work done:**
 - Finish defining the tasks for the next three milestones
 
 **Decisions / Observations / Blockers:**
@@ -573,6 +563,17 @@ THe first use/implementation of iroh was a success. I was able to connect right 
 **Next steps:**
 - Finish system architecture for the new blocs
 - Start iroh-gossip implementation
+
+---
+
+### 12/06/2026
+
+**Work done:**
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+
 
 ## Weekly Summary 08/06 - 14/06
 
