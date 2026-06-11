@@ -41,8 +41,22 @@ This document will evolve as the project progresses, and the initial information
 | Task | End-to-end validation | 21.06 | Done |
 | W7-W10 | **3. Python/Jupyter integration and connectivity validation** | 22.06 - 19.07 | In progress |
 | **Milestone** | Python client layer: a unified Jupyter interface ensuring required files are present locally via on-demand retrieval. | 19.07 | In progress |
-| **Milestone** | Migrate the testbed to virtual machines with separate network stacks to exercise NAT traversal and relay fallback for the first time. | 19.07 | Upcoming |
+| Task | Complete the system architecture document with the rest of the project | 19.07 | Upcoming |
+| Task | Add iroh-gossip to the Rust node + generate a JSON manifest listing local files (tickets) and propagate it to peers | 19.07 | Upcoming |
+| Task | Add Axum HTTP server to the Rust node | 19.07 | Upcoming |
+| Task | Implement the flat `cache/` + `index.json` storage layer in Python | 19.07 | Upcoming |
+| Task | Implement `P2PClient`, thin HTTP wrapper around the Rust API | 19.07 | Upcoming |
+| Task | Implement `P2PDataset`, cache management and on-demand fetch | 19.07 | Upcoming |
+| Task | End-to-end validation on Docker Compose (fetch on demand, index updated) | 19.07 | Upcoming |
 | **Milestone** | Produce a first working notebook that discovers the network dataset, loads it into standard dataframe tooling, and runs queries spanning multiple peers. | 19.07 | Upcoming |
+| Task | Implement p2p.load(filename), fetch + return pandas Dataframe via DuckDB | 19.07 | Upcoming |
+| Task | Implement p2p.query, DuckDB query across all cached Parquet files | 19.07 | Upcoming |
+| Task | Write demo notebooks | 19.07 | Upcoming |
+| Task | End-to-end validation VM | 19.07 | Upcoming |
+| **Milestone** | Migrate the testbed to virtual machines with separate network stacks to exercise NAT traversal and relay fallback for the first time. | 19.07 | Upcoming |
+| Task | Set up 2 VirtualBox VMs with separate networks | 19.07 | Upcoming |
+| Task | Deploy and run the Rust node on both VMs | 19.07 | Upcoming |
+| Task | Validate NAT traversal and relay fallback (iroh handles it, validate via logs) | 19.07 | Upcoming |
 | W11-W13 | **4. Robustness and evaluation in a 2–5 machine testbed** | 20.07 - 09.08 | Upcoming |
 | **Milestone** | Test behavior under realistic conditions: peers joining/leaving, partial availability, varying bandwidth. | 09.08 | Upcoming |
 | **Milestone** | Improve reliability (resume partial transfers, cache behavior, error handling) and document known limitations. | 09.08 | Upcoming |
@@ -526,16 +540,6 @@ THe first use/implementation of iroh was a success. I was able to connect right 
 ### 10/06/2026
 
 **Work done:**
-
-**Decisions / Observations / Blockers:**
-
-**Next steps:**
-
----
-
-### 11/06/2026
-
-**Work done:**
 - Research on how to implement the API... (Axum)
 
 **Decisions / Observations / Blockers:**
@@ -546,7 +550,31 @@ THe first use/implementation of iroh was a success. I was able to connect right 
 - Clearly defin the etechnical sutrcture of this part (API etc..) to get a better overview
 - Defining the tasks for this milestone. 
 
-## Weekly Summary 08/06 - 14/05
+---
+
+### 11/06/2026
+
+**Work done:**
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+
+---
+
+### 12/06/2026
+
+**Work done:**
+- Finish defining the tasks for the next three milestones
+
+**Decisions / Observations / Blockers:**
+- It's hard to define the right balance between difficulty and future upgrade
+
+**Next steps:**
+- Finish system architecture for the new blocs
+- Start iroh-gossip implementation
+
+## Weekly Summary 08/06 - 14/06
 
 **Abstract**
 
