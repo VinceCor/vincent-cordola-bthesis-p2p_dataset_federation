@@ -569,16 +569,26 @@ THe first use/implementation of iroh was a success. I was able to connect right 
 ### 12/06/2026
 
 **Work done:**
+- Complete the "brainstorming" phase for the various components of the projet
 
 **Decisions / Observations / Blockers:**
+- The goal is to keep each part clearly separate so that if I need to modify or improve a section, I don't have to change the entire project, which is especially important for the future. And i also need to make sure everything runs smoothly without the final user even noticing.
 
 **Next steps:**
+- Start iroh-gossip implementation
 
 
 ## Weekly Summary 08/06 - 14/06
 
 **Abstract**
+It's been a week of brainstorming, and a lot of things I hadn't considered are now coming into play for the next phase of the project. I'm glad I got a head start on the previous part, it allowed me to step back and take an overview of the project, and better defin what I'll be doing over the next few weeks.
 
+**Next week**
+- Start implementation, iroh, http axum, python api, client
+
+## Weekly Summary 08/06 - 14/06
+
+**Abstract**
 
 **Next week**
 

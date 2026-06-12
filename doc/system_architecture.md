@@ -63,28 +63,11 @@ In `peer` mode, both streams coexist within the same Tokio process. The `Router`
 
 ---
 
-### 1.2 Parquet Files
-#### Role
-Each institution stores its data as parquet files in a local `data/` directory.
+### 1.2 Transport layer
 
----
+### 1.3 Cache layer
 
-### 1.3 Local cache
-#### Role
-The local cache is a directory on disk (`cache/`) where files downloaded from remote peers are stored. Its purpose is to make the network transparent to the Python layer.
-
----
-
-### 1.4 Python client
-#### Role
-The Python client ats as a bridge between the node agent and the Jupyter notebook.
-
-
----
-
-### 1.5 Jupyter Notebook
-#### Role
-The Jupyter notebook is the main demonstration artifact of this PoC. It represents the researcher's view: a clean interface, with no awareness of the network, that loads data from what appears to be local dataset.
+### 1.4 Query layer
 
 
 ## References
