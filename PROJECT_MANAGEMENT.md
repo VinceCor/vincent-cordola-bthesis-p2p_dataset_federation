@@ -586,7 +586,32 @@ It's been a week of brainstorming, and a lot of things I hadn't considered are n
 **Next week**
 - Start implementation, iroh, http axum, python api, client
 
-## Weekly Summary 08/06 - 14/06
+---
+
+### 15/06/2026
+
+**Work done:**
+- Continue with system architecture mardown
+
+**Decisions / Observations / Blockers:**
+- There were still a few thing to consider (local storage, keeping the data in folder, or migrating them to a database...)
+- I think it's still better to clearly define what needs to be done to avoid problems in the futur and get a better sense of the available options.
+
+**Next steps:**
+- Finish system architecture
+- Start iroh-gossip implementation
+
+---
+
+### 16/06/2026
+
+**Work done:**
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+
+## Weekly Summary 15/06 - 21/06
 
 **Abstract**
 
