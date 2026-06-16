@@ -24,8 +24,8 @@ The  Transport layer is the only component that communicates with iroh-blobs pro
 - Retrieve Parquet files from other peers
 - Expose a local HTTP API so that the Python layer can trigger thses operations without needing to know anything about the network.
 
-#### 1.12 Technology
-| Tool | Role | References |
+#### 1.12 Components
+| Component | Role | References |
 |---|---|---|
 | Rust + Tokio | Asynchronous runtime | [tokio.rs](https://tokio.rs/) |
 | iroh | P2P Network toolkit | [iroh](https://www.iroh.computer/) |
@@ -46,6 +46,12 @@ The Node Agent is built around four iroh components that are instantiated at sta
 `Downloader` coordinates downloads from one or more peers. By being reused for multiple files, it allows iroh to maintain the existing QUIC connection to a given peer, thereby avoiding the overhead of a new handshake for each file.
 
 #### 1.14 HTTP API exposed to Python
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/health` | GET | Returns the node's status |
+| `/files` | GET | Returns the merged manifest: local files + files known from peers |
+| `/fetch` | POST | Triggers an iroh-blobs download using the specified ticket. Returns the cached local path once the download is complete |
 
 #### 1.15 JSON manifest
 This document will indicate what data the peer possesses. It will also allow you to retrieve the data by associating it with the corresponding ticket number.
@@ -86,9 +92,38 @@ The Cache layer acts as a bridge between the Transport layer and the Request lay
 - Maintaining manifest.json
 - Presenting the cache as a simple local directory to the Request layer.
 
-### 1.3 Query layer
+#### 1.21 Components
+| Component | Role |
+|---|---|
+| `cache/` directory | Directory on disk. Contains one .parquet file per downloaded file, named after its BLAKE 3 hash |
+| `manifest.json` | Metadata registry. Currently associates each hash with its filename | []() |
+| P2PClient | A lightweight Python wrapper around the `Axum` HTTP API. It can call `/health`, `/files` and `/fetch` |
+| P2PDataset | Manages the cache. Calls `P2PClient.fetch()` if a file is missing, updates `manifest.json` after each fetch, and returns the local paths to the query layer |
 
-### Jupyter notebook
+#### 1.22 How it works
+```
+Is the file in cache/
+    - YES -> Rturn the local path directly
+    - NO -> Call P2PClient.fetch(ticket)
+            -> Rust node download the file via iroh
+                -> Update manifest.json
+                    -> Return the local path
+```
+
+### 1.3 Query layer
+The query layer is the one with which the researcher interacts. It is responsible for:
+- Providing a simple Python API (`p2p.load()`,`p2p.files()`) that hides all complexity
+- Execute queries on multiple Parquet files from multiple peers
+- Return standard (pandas) DataFrames
+
+#### 1.31 Components
+| Component | Role | References |
+|---|---|---|
+| DuckDB? | | []() |
+| Polars? | | []() |
+| pandas | Standard Python data analysis library | [pandas](https://pandas.pydata.org/docs/) |
+| `p2p.load(filename)` | Request the cache layer to get the local path -> reads it -> returns a Dataframe | |
+| `p2p.files()` | Returns all available files | |
 
 ## References
 
