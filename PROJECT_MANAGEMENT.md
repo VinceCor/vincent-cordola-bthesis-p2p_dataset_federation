@@ -606,6 +606,19 @@ It's been a week of brainstorming, and a lot of things I hadn't considered are n
 ### 16/06/2026
 
 **Work done:**
+- Finish system architecture mardown update
+- Start iroh-gossip
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+- Finish iroh-gossip / first manifest
+
+---
+
+### 17/06/2026
+
+**Work done:**
 
 **Decisions / Observations / Blockers:**
 
