@@ -1,8 +1,20 @@
 // Code taken from rust-mvp (peer function)
-use iroh::{Endpoint, EndpointAddr, endpoint::presets, protocol::Router};
+use iroh::{Endpoint, EndpointId, SecretKey, endpoint::presets, protocol::Router};
 use iroh_blobs::{BlobsProtocol, store::mem::MemStore, ticket::BlobTicket};
+use iroh_gossip::{api::Event, net::Gossip, proto::TopicId};
 use n0_error::{Result, StdResultExt};
-use std::path::PathBuf;
+use sha2::{Digest, Sha256};
+use serde::{Deserialize, Serialize};
+use std::{env, path::PathBuf};
+
+// Manifest
+// The manifest describes what this node possesses: its institution name and,
+// for each local .parquet file, its real filename, its BLAKE3 hash, and the
+// BlobTicket needed to fetch it. It is broadcast on a shared gossip topic so every peer ends up
+// with a copy of every other peer's manifest
+
+
+
 
 // peer: single process that simultaneously serves local files and accepts interactive fetch commands.
 // 

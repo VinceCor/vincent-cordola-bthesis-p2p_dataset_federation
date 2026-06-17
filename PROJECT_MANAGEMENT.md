@@ -619,6 +619,20 @@ It's been a week of brainstorming, and a lot of things I hadn't considered are n
 ### 17/06/2026
 
 **Work done:**
+- Progress on iroh-gossip (broadcast, bootstreap peers)
+- Search on Serde for the small manifest
+
+**Decisions / Observations / Blockers:**
+- I'll try to finish this this week, there are a lot of things to take into account. I need to keep it simple, and in worst case, I'll move to the next tasks
+
+**Next steps:**
+- Finish iroh-gossip part
+
+---
+
+### 18/06/2026
+
+**Work done:**
 
 **Decisions / Observations / Blockers:**
 

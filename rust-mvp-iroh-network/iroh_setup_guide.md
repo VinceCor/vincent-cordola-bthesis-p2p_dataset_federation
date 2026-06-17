@@ -729,6 +729,12 @@ Finally, we can see that the files have been successfully downloaded
 
 We can see that this is a success. We currently able to send and receive files from different peers. This confirms peers that I already have a functional foundation for the project. Adding Iroh-Gossip and other features may be considered in the future.
 
+## 6. Docker with iroh-gossip
+
+### 6.1 Manifest
+> References: https://serde.rs/ https://docs.rs/serde_json/latest/serde_json/
+The manifest describes what this node possesses: its institution name and, for each local .parquet file, its real filename, its BLAKE3 hash, and the BlobTicket needed to fetch it. It is broadcast on a shared gossip topic so every peer ends up with a copy of every other peer's manifest
+
 
 ## References
 
