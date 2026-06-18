@@ -13,6 +13,53 @@ use std::{env, path::PathBuf};
 // BlobTicket needed to fetch it. It is broadcast on a shared gossip topic so every peer ends up
 // with a copy of every other peer's manifest
 
+// One entry of the manifest, single Parquet file
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ManifestFile {
+    pub file_name: String,
+    pub hash: String,
+    pub ticket: String,
+}
+
+// The manifest broadcast by a peer
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Manieft {
+    pub institution: String,
+    pub files: Vec<ManifestFile>,
+}
+
+// Derives a stable 32-byte gossip TopicId
+// https://docs.iroh.computer/connecting/gossip#picking-a-topic-id
+fn manifest_topic_id() -> TopicId {
+    let mut hasher = Sha256::new();
+    hasher.update(b"p2p-parquet/manifest/v1");
+    let hash = hasher.finalize();
+    TopicId::from_bytes(hash.into())
+}
+
+// For bootstrap_peers_from_env() and build_local_manifest_files claude chatbot was used to help me create these functions
+
+// Reads BOOTSTRAP_PEERS environment variable
+// An empty Vec means first peer, nobody to bootstrap from
+fn bootstrap_peers_from_env() -> Result<Vec<EndpointId>> {
+    let raw = match env::var("BOOTSTRAP_PEERS") {
+        Ok(v) if !v.trim().is_empty() => v,
+        _ => return OK(Vec::new()),
+    };
+
+    let mut peers = Vec::new();
+    for id_str in raw.split(',') {
+        let id_str = id_str.trim();
+        if id_str.is_empty() {
+            continue;
+        }
+        let id: EndpointId = id_str.parse().std_context("Invalid BOOTSTRAP_PEERS entry")?;
+        peers.push(id);
+    }
+    Ok(peers)
+}
+
+
 
 
 

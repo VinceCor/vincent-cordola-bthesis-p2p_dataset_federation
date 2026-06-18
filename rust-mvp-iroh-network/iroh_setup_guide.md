@@ -736,6 +736,11 @@ We can see that this is a success. We currently able to send and receive files f
 The manifest describes what this node possesses: its institution name and, for each local .parquet file, its real filename, its BLAKE3 hash, and the BlobTicket needed to fetch it. It is broadcast on a shared gossip topic so every peer ends up with a copy of every other peer's manifest
 
 
+
+https://docs.iroh.computer/connecting/gossip    
+https://docs.iroh.computer/connecting/gossip#getting-bootstrap-peers    
+https://docs.rs/iroh-gossip/latest/iroh_gossip/     
+https://github.com/n0-computer/iroh-gossip/blob/main/examples/chat.rs
 ## References
 
 ##### R1 | [Rust and Cargo installation](https://doc.rust-lang.org/cargo/getting-started/installation.html)
