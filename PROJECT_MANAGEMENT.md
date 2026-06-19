@@ -645,17 +645,31 @@ It's been a week of brainstorming, and a lot of things I hadn't considered are n
 ### 19/06/2026
 
 **Work done:**
+- Finish iroh-gossip implementation
 
 **Decisions / Observations / Blockers:**
+- It works very well, there may be some adjustments to make to the manifest sharing, but overall it works very well
 
 **Next steps:**
+- Finish documentation about iroh-gossip / manifest
 
 
 ## Weekly Summary 15/06 - 21/06
 
 **Abstract**
+This week has again been heavily focused on the overall architecture, with the implementation of iroh gossip, which is working very well.
 
 **Next week**
+- Finish iroh-gossip documentation
+- Add Axum HTTP server to the Rust node
+
+## Weekly Summary 22/06 - 28/06
+
+**Abstract**
+
+**Next week**
+
+
 
 <!-- journal tempalte
 
