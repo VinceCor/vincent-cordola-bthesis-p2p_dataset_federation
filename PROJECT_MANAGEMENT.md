@@ -633,10 +633,23 @@ It's been a week of brainstorming, and a lot of things I hadn't considered are n
 ### 18/06/2026
 
 **Work done:**
+- Progress iroh-gossip (manifest part)
 
 **Decisions / Observations / Blockers:**
 
 **Next steps:**
+- Finish iroh-gossip
+
+---
+
+### 19/06/2026
+
+**Work done:**
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+
 
 ## Weekly Summary 15/06 - 21/06
 
