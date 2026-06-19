@@ -6,8 +6,10 @@ services:
     container_name: peer1
     stdin_open: true
     tty: true
+    environment:
+      - INSTITUTION=peer1
     volumes:
-      - ./data/peer1:/app/data:ro # peer1 .parquet files
+      - ./data/peer1:/app/data # peer1 .parquet files
       - peer1_cache:/app/cache # isolated cache
     networks:
       - p2p-net
@@ -17,8 +19,11 @@ services:
     container_name: peer2
     stdin_open: true
     tty: true
+    environment:
+        INSTITUTION: peer2
+        BOOTSTRAP_PEERS: "f865b4d92bfb0005aa8486a1349b47f54e9201b29907d79c874831fa314a6374" # Enter the nodeID from peer1 here
     volumes:
-      - ./data/peer2:/app/data:ro # peer1 .parquet files
+      - ./data/peer2:/app/data # peer1 .parquet files
       - peer2_cache:/app/cache # isolated cache
     networks:
       - p2p-net
@@ -28,8 +33,11 @@ services:
     container_name: peer3
     stdin_open: true
     tty: true
+    environment:
+        INSTITUTION: peer3
+        BOOTSTRAP_PEERS: "f865b4d92bfb0005aa8486a1349b47f54e9201b29907d79c874831fa314a6374" # Enter the nodeID from peer1 here
     volumes:
-      - ./data/peer3:/app/data:ro # peer1 .parquet files
+      - ./data/peer3:/app/data # peer1 .parquet files
       - peer3_cache:/app/cache # isolated cache
     networks:
       - p2p-net

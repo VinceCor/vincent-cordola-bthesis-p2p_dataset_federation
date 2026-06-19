@@ -44,7 +44,7 @@ fn manifest_topic_id() -> TopicId {
 fn bootstrap_peers_from_env() -> Result<Vec<EndpointId>> {
     let raw = match env::var("BOOTSTRAP_PEERS") {
         Ok(v) if !v.trim().is_empty() => v,
-        _ => return OK(Vec::new()),
+        _ => return Ok(Vec::new()),
     };
 
     let mut peers = Vec::new();
@@ -99,14 +99,14 @@ async fn build_local_manifest_files(store: &MemStore, endpoint_id: EndpointId) -
 // Writes a received manifest to data/peers_manifest/<institution>.json so that the Cache layer
 // can read it as a plain local file, same as the local manifest.
 // Overwrites the previous file for that institution, which keeps the folder updated.
-asny fn save_peer_manifest(manifest: &Manifest) -> Result<()> {
+async fn save_peer_manifest(manifest: &Manifest) -> Result<()> {
     let peers_dir = PathBuf::from("data/peers_manifest");
-    tokio::fs::create_dir_all(&peer_dir)
+    tokio::fs::create_dir_all(&peers_dir)
         .await
-        .std_context("Unable to create data/peers_manifest/");
+        .std_context("Unable to create data/peers_manifest/")?;
 
     let dest = peers_dir.join(format!("{}.json", manifest.institution));
-    let json = serde_json::to_string_pretty(manifest).std_context("Error serializing manifest")
+    let json = serde_json::to_string_pretty(manifest).std_context("Error serializing manifest")?;
 
     tokio::fs::write(&dest,json)
         .await
@@ -127,13 +127,13 @@ asny fn save_peer_manifest(manifest: &Manifest) -> Result<()> {
 //      - fetch <ticket> | download the file identified by the ticket
 //      - quit           | shutdown
 pub async fn peer() -> Result<()> {
-    let institution = env::var("INSTITUTION").std_context("INSTITUTION environment variable is required")
+    let institution = env::var("INSTITUTION").std_context("INSTITUTION environment variable is required")?;
     let bootstrap = bootstrap_peers_from_env()?;
 
     // Shared endpoint and store
     let endpoint = Endpoint::bind(presets::N0).await?;
     println!("Peer: {:?}", endpoint.addr());
-    println!("Institution: {INSTITUTION}");
+    println!("Institution: {institution}");
 
     let store = MemStore::new();
 
@@ -170,7 +170,7 @@ pub async fn peer() -> Result<()> {
         .split();
 
     let local_manifest = Manifest {
-        institition: institition.clone(),
+        institution: institution.clone(),
         files: local_files, 
     };
 
@@ -184,7 +184,7 @@ pub async fn peer() -> Result<()> {
     let gossip_task = tokio::spawn(async move {
         if !bootstrap.is_empty() {
             if let Err(e) = receiver.joined().await {
-                eprintln!("Gossip: error waiting for peers to join: {e}")
+                eprintln!("Gossip: error waiting for peers to join: {e}");
             }
         }
 
@@ -197,9 +197,9 @@ pub async fn peer() -> Result<()> {
         };
 
         if let Err(e) = sender.broadcast(payload.into()).await {
-            eprinln!("Gossip: error broadcasting manifest: {e}");
+            eprintln!("Gossip: error broadcasting manifest: {e}");
         } else {
-            println!("Gossip: manifest broadcast for inistution '{}'", local_manifest.inistution);
+            println!("Gossip: manifest broadcast for institution '{}'", local_manifest.institution);
         }
 
         // n0_future::StreamExt is required for '.next()' on the gossip receiver.
@@ -233,8 +233,7 @@ pub async fn peer() -> Result<()> {
                 }
             }
         }
-
-    })
+    });
 
 
     // Prepare cache/ and the downloader once, reused for every fetch command
