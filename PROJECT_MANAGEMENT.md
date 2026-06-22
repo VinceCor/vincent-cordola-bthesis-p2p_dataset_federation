@@ -663,6 +663,29 @@ This week has again been heavily focused on the overall architecture, with the i
 - Finish iroh-gossip documentation
 - Add Axum HTTP server to the Rust node
 
+---
+
+### 22/06/2026
+
+**Work done:**
+- Start of documentation for the iroh gossip / manifest sharing section
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+- Finish the documentation
+- Start Axum http server
+
+---
+
+### 23/06/2026
+
+**Work done:**
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+
 ## Weekly Summary 22/06 - 28/06
 
 **Abstract**
