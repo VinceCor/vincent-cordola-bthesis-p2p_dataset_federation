@@ -34,7 +34,7 @@ In this section, I'll show you how to connect two endpoints.
 Add dependencies (this can be done directory in Cargo.toml).
 
 Cargo.toml:
-```
+```toml
 [package]
 name = "rust-mvp"
 version = "0.1.0"
@@ -730,12 +730,305 @@ Finally, we can see that the files have been successfully downloaded
 We can see that this is a success. We currently able to send and receive files from different peers. This confirms peers that I already have a functional foundation for the project. Adding Iroh-Gossip and other features may be considered in the future.
 
 ## 6. Docker with iroh-gossip
+This document explains how to extend the peer function of the Docker testbed using iroh-gossip.     
+Two elements are added:
+1. A manifest: a small JSON file listing the name of this node's institution and, for each local parquet file, its actual name, its BLAKE3 hash, and the BlobTicket required to retrieve it.
+2. Iroh-gossip: the protocol that automatically distributes this manifest to all other peers, so that each peer ends up with a local copy of every other peer's manifest, without having to exchange tickets manually.
 
-### 6.1 Manifest
+### 6.1 Iroh-gossip
+> References: https://docs.iroh.computer/connecting/gossip, https://docs.rs/iroh-gossip/latest/iroh_gossip/
+
+In the previous section, tickets were exchanged manually. Iroh-gossip eliminates this step, once a node knows its own files, it broadcasts them to a shared topic, and every peer connected to that topic receives them automatically.
+
+#### 6.11 Propagation
+`Iroh-gossip` is based on the HyParView and PlumTree algorithms: each node maintains only a handful of neighbors and forwards messages redundantly. As a result, a message eventually reaches all peers even when nodes join, leave, or lose messages.  
+No one needs to know everyone in advance. When adding a peer, we only need it to point to a single `EndpointId` at first.
+
+
 > References: https://serde.rs/ https://docs.rs/serde_json/latest/serde_json/
-The manifest describes what this node possesses: its institution name and, for each local .parquet file, its real filename, its BLAKE3 hash, and the BlobTicket needed to fetch it. It is broadcast on a shared gossip topic so every peer ends up with a copy of every other peer's manifest
+
+### 6.2 Changes made to Cargo.toml
+
+Five new dependencies have been added to the existing `Cargo.toml`
+```toml
+[package]
+name = "rust-mvp"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+iroh = "0.98.2"
+iroh-blobs = "0.100.0"
+iroh-gossip = "0.98"
+tokio = { version = "1", features = ["full"] }
+anyhow = "1"
+n0-error = "0.1"
+n0-future = "0.3"
+tracing-subscriber = "0.3"
+futures = "0.3"
+sha2 = "0.10"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+```
+
+| New dependencies | Role |
+|---|---|
+| iroh-gossip = "0.98" | Epidemic spread protocol. Fixed at `0.98` to correspond to iroh `0.98.2` |
+| n0-future = "0.3" | Provides `StreamExt` needed to read incoming gossip messages using `.next().await` |
+| sha2 = "0.10" | Calcultes the SHA-256 hash used to derive the gossip `TopicId` |
+| `serde` + `serde_json` | Serializes the manifest into JSON for sending to the topic, and deserializes it upon receipt |
+
+### 6.3 Manifest
+
+#### 6.31 Data structure
+> References: https://serde.rs/ https://docs.rs/serde_json/latest/serde_json/
+
+```Rust
+// One entry of the manifest, single Parquet file
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ManifestFile {
+    pub file_name: String,
+    pub hash: String,
+    pub ticket: String,
+}
+
+// The manifest broadcast by a peer
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Manifest {
+    pub institution: String,
+    pub files: Vec<ManifestFile>,
+}
+```
+
+`#[derive(Serialize, Deserialize)]` is the `Serde` mechanism that automatically generates the code for converting to and from JSON without having to write it by hand.  
+`Manifest` is the JSON representation of this PoC: the institution's name at the top, followed by a list of files. Once serialized, a manifest looks like this:
+```JSON
+{
+  "institution": "peer1",
+  "files": [
+    {
+      "file_name": "sample.parquet",
+      "hash": "3b9de451872e...",
+      "ticket": "blobad4glngzfp5qabnkqsdkcne3i72u5eq..."
+    }
+  ]
+}
+```
+
+#### 6.32 Building the manifest from the existing hash loop
+
+The original `peer()` function already scanned the `data/` directory, hashed each `.parquet` file, and displayed a ticket, without ever saving the result. `build_local_manifest_files` is exactly the same loop, except that it adds a `ManifestFile` to a `Vec` in addition to generating the ticket.
+
+```Rust
+async fn build_local_manifest_files(store: &MemStore, endpoint_id: EndpointId) -> Result<Vec<ManifestFile>> {
+    let data_dir = PathBuf::from("data");
+    let mut entries = tokio::fs::read_dir(&data_dir)
+        .await
+        .std_context("Unable to read /data folder")?;
+
+    let mut files = Vec::new();
+
+    while let Some(entry) = entries.next_entry().await.std_context("Error reading entry")? {
+        let path = entry.path();
+        if path.extension().and_then(|e| e.to_str()) == Some("parquet") {
+            let abs_path = path.canonicalize().std_context("Absolute path not found")?;
+            let filename = path.file_name().unwrap().to_string_lossy().to_string();
+
+            // add_path hashes the file and returns a tag (hash + format)
+            // The "tag" prevents the store's garbage collector from deleting the blob
+            let tag = store
+                .blobs()
+                .add_path(abs_path)
+                .await
+                .std_context("Error during hashing")?;
+
+            // BlobTicket -> Blake 3 hash of the file + listener's EndpointId
+            let ticket = BlobTicket::new(endpoint_id.into(), tag.hash, tag.format);
+
+            files.push(ManifestFile {
+                file_name: filename,
+                hash: tag.hash.to_string(),
+                ticket: ticket.to_string(),
+            });
+        }
+    }
+    Ok(files)
+}
+```
+
+#### 6.33 Saving received manifests
+Writes a received manifest to `data/peers_manifest/<institution>.json` so that the Cache layer can read it as a plain local file, same as the local manifest.
+Overwrites the previous file for that institution, which keeps the folder updated.
+```Rust
+async fn save_peer_manifest(manifest: &Manifest) -> Result<()> {
+    let peers_dir = PathBuf::from("data/peers_manifest");
+    tokio::fs::create_dir_all(&peers_dir)
+        .await
+        .std_context("Unable to create data/peers_manifest/")?;
+
+    let dest = peers_dir.join(format!("{}.json", manifest.institution));
+    let json = serde_json::to_string_pretty(manifest).std_context("Error serializing manifest")?;
+
+    tokio::fs::write(&dest,json)
+        .await
+        .std_context("Unable to write peer manifest")?;
+
+    Ok(())
+}
+```
+
+### 6.4 Configuration via environment variables
+
+`env::var("INSTITUTION")` reads the environment variable. If it is missing, `std_context` treates it as an error and the node stops immediately, rather than publishing a manifest without an institution name.
+
+```Rust
+let institution = env::var("INSTITUTION").std_context("INSTITUTION environment variable is required")?;
+```
+
+#### 6.41 Bootstrap peers
+> References https://docs.iroh.computer/connecting/gossip#getting-bootstrap-peers
+
+The Iroh-gopssip documentation lists three ways to obtain bootstrap peers: sharing a ticket, using a public rendezvous server and picking a topic ID. The TopicId is used here
+
+```Rust
+fn bootstrap_peers_from_env() -> Result<Vec<EndpointId>> {
+    let raw = match env::var("BOOTSTRAP_PEERS") {
+        Ok(v) if !v.trim().is_empty() => v,
+        _ => return Ok(Vec::new()),
+    };
+
+    let mut peers = Vec::new();
+    for id_str in raw.split(',') {
+        let id_str = id_str.trim();
+        if id_str.is_empty() {
+            continue;
+        }
+        let id: EndpointId = id_str.parse().std_context("Invalid BOOTSTRAP_PEERS entry")?;
+        peers.push(id);
+    }
+    Ok(peers)
+}
+```
+`BOOTSTRAP_PEERS` is a comma separated list of `EndpointId`, in the same heaxdecimal format already displayed by `endpoint.addr()`.     
+An empty or missing variable returns an empty `Vec`, which is the correct value for the first peer, `iroh-gossip` accepts an empty bootstrap and simply waits for someone else to connect.
+
+### 6.5 Iroh gossip in Peer()
+
+#### 6.51 Creating te Gossip protocol and registering it on the router
+
+```Rust
+    let gossip = Gossip::builder().spawn(endpoint.clone());
+
+    let router = Router::builder(endpoint.clone())
+        .accept(iroh_blobs::ALPN, blobs)
+        .accept(iroh_gossip::ALPN, gossip.clone())
+        .spawn();
+```
+`Gossip::builder().spawn(endpoint.clone())` creates the gossip manager associated with the same `Endpoint` used for file transfer.  
+The `router` in the original version supported only one protocol (`iroh_blobs::ALPN`), a second `.accept(...)` registers `iroh_gossip::ALPN` alongside it. Incoming QUIC connections are routed to one handler or the other based solely on the ALPN negotiated during the handshake.
+
+#### 6.51 Derive a stable `TopicId`
+> References: https://docs.iroh.computer/connecting/gossip#picking-a-topic-id
+
+```Rust
+fn manifest_topic_id() -> TopicId {
+    let mut hasher = Sha256::new();
+    hasher.update(b"p2p-parquet/manifest/v1");
+    let hash = hasher.finalize();
+    TopicId::from_bytes(hash.into())
+}
+```
+
+A gossip topic is identified by a 32-byte `TopicId`. The documentation states that it is recommended to use a cryptographic hash of a meaningful string to avoid collisions with other applications, which is exactly what is done here with SHA256. All containers hash the same fixed string, so they automatically end up on the same topic without any manual coordination. This topic is used solely for distributing manifests.
+
+#### 6.52 Subscribe and build the local manifest
+
+```Rust
+let topic_id = manifest_topic_id();
+
+println!("Joining gossip topic with {} bootstrap peer(s)",bootstrap.len());
+
+let (sender, mut receiver) = gossip
+    .subscribe(topic_id, bootstrap.clone())
+    .await
+    .std_context("Error subscibing to gossip topic")?
+    .split();
+
+let local_manifest = Manifest {
+    institution: institution.clone(),
+    files: local_files, 
+};
+
+// Also persist our own manifest locally
+save_peer_manifest(&local_manifest).await?;
+```
+
+`gossip.subscribe(topic_id, bootstrap.clone())` join the swarm, `bootstrap` is the list read from `BOOTSTRAP_PEERS` and may be empty for the first peer. `split()` divides the subscription in a sender (for sending messages) and a receiver (for reading incomming messages).     
+`local_manifest` is built from `local_files`, which were already generated by `build_local_manifest_files`. `save_peer_manifest` immediately writes it to disk: the manifest for this node is therefore visible in `data/peers_manifest/<institution>.json` even before another peer has connected.
 
 
+#### 6.43 The gossip task running in the background
+> References https://docs.iroh.computer/connecting/gossip#waiting-for-peers
+
+```Rust
+// Spawn a background task that:
+// 1. waits until at least one peer has joined the topic
+// 2. broadcasts our manifest once connected
+// 3. then listens for manifests broadcast by other peers and saves them to data/peers_manifest
+let gossip_task = tokio::spawn(async move {
+    if !bootstrap.is_empty() {
+        if let Err(e) = receiver.joined().await {
+            eprintln!("Gossip: error waiting for peers to join: {e}");
+        }
+    }
+
+    let payload = match serde_json::to_vec(&local_manifest) {
+        Ok(p) => p,
+        Err(e) => {
+            eprintln!("Gossip: error serializing local manifest: {e}");
+            return;
+        }
+    };
+
+    if let Err(e) = sender.broadcast(payload.into()).await {
+        eprintln!("Gossip: error broadcasting manifest: {e}");
+    } else {
+        println!("Gossip: manifest broadcast for institution '{}'", local_manifest.institution);
+    }
+
+    // n0_future::StreamExt is required for '.next()' on the gossip receiver.
+    // For the while let Some(event) claude chatbot was used to help
+    use n0_future::StreamExt;
+    while let Some(event) = receiver.next().await {
+        match event {
+            Ok(Event::Received(message)) => {
+                match serde_json::from_slice::<Manifest>(&message.content) {
+                    Ok(manifest) => {
+                        println!(
+                            "Gossip: received manifest from '{}' ({} file(s))",
+                            manifest.institution,
+                            manifest.files.len()
+                        );
+                        if let Err(e) = save_peer_manifest(&manifest).await {
+                            eprintln!("Gossip: error saving peer manifest: {e}");
+                        }
+                    }
+                    Err(e) => {
+                        eprintln!("Gossip: received message is not a valid manifest: {e}");
+                    }
+                }
+            }
+            Ok(_) => {
+                // Other event kinds (neighbor up/down, etc.) are ignored for this PoC.
+            }
+            Err(e) => {
+                eprintln!("Gossip: stream error: {e}");
+                break;
+            }
+        }
+    }
+});
+```
 
 https://docs.iroh.computer/connecting/gossip    
 https://docs.iroh.computer/connecting/gossip#getting-bootstrap-peers    

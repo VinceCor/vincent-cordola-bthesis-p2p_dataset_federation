@@ -681,10 +681,13 @@ This week has again been heavily focused on the overall architecture, with the i
 ### 23/06/2026
 
 **Work done:**
+- Almost done for the iroh gossip / manifest documentation
 
 **Decisions / Observations / Blockers:**
 
 **Next steps:**
+- Finish this documentation
+- Start Axum http server
 
 ## Weekly Summary 22/06 - 28/06
 
@@ -705,3 +708,11 @@ This week has again been heavily focused on the overall architecture, with the i
 **Next steps:**
 
 -->
+
+
+### Temp todo
+- ENV (Topic Id)
+- Local DB
+- Fatest file sharing (2 peers having all the data for example)
+- Temp memory storage to disk
+- Potential MemStore to FsStore
