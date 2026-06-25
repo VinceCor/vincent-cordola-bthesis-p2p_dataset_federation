@@ -700,6 +700,18 @@ This week has again been heavily focused on the overall architecture, with the i
 **Next steps:**
 - Start http Axum
 
+---
+
+### 25/06/2026
+
+**Work done:**
+- Start of the implementation of the HTTP API
+
+**Decisions / Observations / Blockers:**
+- Create a new folder that will serve as the final project folder
+
+**Next steps:**
+- Progress on axum http server
 
 ## Weekly Summary 22/06 - 28/06
 
@@ -723,7 +735,7 @@ This week has again been heavily focused on the overall architecture, with the i
 
 
 ### Temp todo / nice to have
-- ENV (Topic Id)
+- VENV (Topic Id)
 - Local DB
 - Fatest file sharing (2 peers having all the data for example)
 - Temp memory storage to disk
