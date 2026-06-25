@@ -689,6 +689,18 @@ This week has again been heavily focused on the overall architecture, with the i
 - Finish this documentation
 - Start Axum http server
 
+---
+
+### 24/06/2026 (Fête nationale du Québec)
+
+**Work done:**
+- Finish gossip setup guide
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+- Start http Axum
+
+
 ## Weekly Summary 22/06 - 28/06
 
 **Abstract**

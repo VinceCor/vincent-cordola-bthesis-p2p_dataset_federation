@@ -1,4 +1,3 @@
-# References: https://docs.docker.com/compose/how-tos/networking/
 services:
 
   peer1:
@@ -21,7 +20,7 @@ services:
     tty: true
     environment:
         INSTITUTION: peer2
-        BOOTSTRAP_PEERS: "f865b4d92bfb0005aa8486a1349b47f54e9201b29907d79c874831fa314a6374" # Enter the nodeID from peer1 here
+        BOOTSTRAP_PEERS: "acf5d6d54a6a62970b04cc1ca51db5dc72797d686d0d7c3d30adf0f0ae39b8a1" # Enter the nodeID from peer1 here
     volumes:
       - ./data/peer2:/app/data # peer1 .parquet files
       - peer2_cache:/app/cache # isolated cache
@@ -35,7 +34,7 @@ services:
     tty: true
     environment:
         INSTITUTION: peer3
-        BOOTSTRAP_PEERS: "f865b4d92bfb0005aa8486a1349b47f54e9201b29907d79c874831fa314a6374" # Enter the nodeID from peer1 here
+        BOOTSTRAP_PEERS: "acf5d6d54a6a62970b04cc1ca51db5dc72797d686d0d7c3d30adf0f0ae39b8a1" # Enter the nodeID from peer1 here
     volumes:
       - ./data/peer3:/app/data # peer1 .parquet files
       - peer3_cache:/app/cache # isolated cache
