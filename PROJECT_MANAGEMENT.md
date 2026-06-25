@@ -42,8 +42,8 @@ This document will evolve as the project progresses, and the initial information
 | W7-W10 | **3. Python/Jupyter integration and connectivity validation** | 22.06 - 19.07 | In progress |
 | **Milestone** | Python client layer: a unified Jupyter interface ensuring required files are present locally via on-demand retrieval. | 19.07 | In progress |
 | Task | Complete the system architecture document with the rest of the project | 19.07 | Done |
-| Task | Add iroh-gossip to the Rust node + generate a JSON manifest listing local files (tickets) and propagate it to peers | 19.07 | In progress |
-| Task | Add Axum HTTP server to the Rust node | 19.07 | Upcoming |
+| Task | Add iroh-gossip to the Rust node + generate a JSON manifest listing local files (tickets) and propagate it to peers | 19.07 | Done |
+| Task | Add Axum HTTP server to the Rust node | 19.07 | In progress |
 | Task | Implement the flat `cache/` + `index.json` storage layer in Python | 19.07 | Upcoming |
 | Task | Implement `P2PClient`, thin HTTP wrapper around the Rust API | 19.07 | Upcoming |
 | Task | Implement `P2PDataset`, cache management and on-demand fetch | 19.07 | Upcoming |
@@ -722,9 +722,11 @@ This week has again been heavily focused on the overall architecture, with the i
 -->
 
 
-### Temp todo
+### Temp todo / nice to have
 - ENV (Topic Id)
 - Local DB
 - Fatest file sharing (2 peers having all the data for example)
 - Temp memory storage to disk
 - Potential MemStore to FsStore
+- Parquet partial-read optimization
+- tmux (systemd)
