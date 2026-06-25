@@ -42,8 +42,8 @@ This document will evolve as the project progresses, and the initial information
 | W7-W10 | **3. Python/Jupyter integration and connectivity validation** | 22.06 - 19.07 | In progress |
 | **Milestone** | Python client layer: a unified Jupyter interface ensuring required files are present locally via on-demand retrieval. | 19.07 | In progress |
 | Task | Complete the system architecture document with the rest of the project | 19.07 | Done |
-| Task | Add iroh-gossip to the Rust node + generate a JSON manifest listing local files (tickets) and propagate it to peers | 19.07 | In progress |
-| Task | Add Axum HTTP server to the Rust node | 19.07 | Upcoming |
+| Task | Add iroh-gossip to the Rust node + generate a JSON manifest listing local files (tickets) and propagate it to peers | 19.07 | Done |
+| Task | Add Axum HTTP server to the Rust node | 19.07 | In progress |
 | Task | Implement the flat `cache/` + `index.json` storage layer in Python | 19.07 | Upcoming |
 | Task | Implement `P2PClient`, thin HTTP wrapper around the Rust API | 19.07 | Upcoming |
 | Task | Implement `P2PDataset`, cache management and on-demand fetch | 19.07 | Upcoming |
@@ -606,16 +606,108 @@ It's been a week of brainstorming, and a lot of things I hadn't considered are n
 ### 16/06/2026
 
 **Work done:**
+- Finish system architecture mardown update
+- Start iroh-gossip
 
 **Decisions / Observations / Blockers:**
 
 **Next steps:**
+- Finish iroh-gossip / first manifest
+
+---
+
+### 17/06/2026
+
+**Work done:**
+- Progress on iroh-gossip (broadcast, bootstreap peers)
+- Search on Serde for the small manifest
+
+**Decisions / Observations / Blockers:**
+- I'll try to finish this this week, there are a lot of things to take into account. I need to keep it simple, and in worst case, I'll move to the next tasks
+
+**Next steps:**
+- Finish iroh-gossip part
+
+---
+
+### 18/06/2026
+
+**Work done:**
+- Progress iroh-gossip (manifest part)
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+- Finish iroh-gossip
+
+---
+
+### 19/06/2026
+
+**Work done:**
+- Finish iroh-gossip implementation
+
+**Decisions / Observations / Blockers:**
+- It works very well, there may be some adjustments to make to the manifest sharing, but overall it works very well
+
+**Next steps:**
+- Finish documentation about iroh-gossip / manifest
+
 
 ## Weekly Summary 15/06 - 21/06
 
 **Abstract**
+This week has again been heavily focused on the overall architecture, with the implementation of iroh gossip, which is working very well.
 
 **Next week**
+- Finish iroh-gossip documentation
+- Add Axum HTTP server to the Rust node
+
+---
+
+### 22/06/2026
+
+**Work done:**
+- Start of documentation for the iroh gossip / manifest sharing section
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+- Finish the documentation
+- Start Axum http server
+
+---
+
+### 23/06/2026
+
+**Work done:**
+- Almost done for the iroh gossip / manifest documentation
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+- Finish this documentation
+- Start Axum http server
+
+---
+
+### 24/06/2026 (Fête nationale du Québec)
+
+**Work done:**
+- Finish gossip setup guide
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+- Start http Axum
+
+
+## Weekly Summary 22/06 - 28/06
+
+**Abstract**
+
+**Next week**
+
+
 
 <!-- journal tempalte
 
@@ -628,3 +720,13 @@ It's been a week of brainstorming, and a lot of things I hadn't considered are n
 **Next steps:**
 
 -->
+
+
+### Temp todo / nice to have
+- ENV (Topic Id)
+- Local DB
+- Fatest file sharing (2 peers having all the data for example)
+- Temp memory storage to disk
+- Potential MemStore to FsStore
+- Parquet partial-read optimization
+- tmux (systemd)

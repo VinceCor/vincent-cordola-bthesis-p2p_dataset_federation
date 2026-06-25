@@ -1,4 +1,3 @@
-# References: https://docs.docker.com/compose/how-tos/networking/
 services:
 
   peer1:
@@ -6,8 +5,10 @@ services:
     container_name: peer1
     stdin_open: true
     tty: true
+    environment:
+      - INSTITUTION=peer1
     volumes:
-      - ./data/peer1:/app/data:ro # peer1 .parquet files
+      - ./data/peer1:/app/data # peer1 .parquet files
       - peer1_cache:/app/cache # isolated cache
     networks:
       - p2p-net
@@ -17,8 +18,11 @@ services:
     container_name: peer2
     stdin_open: true
     tty: true
+    environment:
+        INSTITUTION: peer2
+        BOOTSTRAP_PEERS: "acf5d6d54a6a62970b04cc1ca51db5dc72797d686d0d7c3d30adf0f0ae39b8a1" # Enter the nodeID from peer1 here
     volumes:
-      - ./data/peer2:/app/data:ro # peer1 .parquet files
+      - ./data/peer2:/app/data # peer1 .parquet files
       - peer2_cache:/app/cache # isolated cache
     networks:
       - p2p-net
@@ -28,8 +32,11 @@ services:
     container_name: peer3
     stdin_open: true
     tty: true
+    environment:
+        INSTITUTION: peer3
+        BOOTSTRAP_PEERS: "acf5d6d54a6a62970b04cc1ca51db5dc72797d686d0d7c3d30adf0f0ae39b8a1" # Enter the nodeID from peer1 here
     volumes:
-      - ./data/peer3:/app/data:ro # peer1 .parquet files
+      - ./data/peer3:/app/data # peer1 .parquet files
       - peer3_cache:/app/cache # isolated cache
     networks:
       - p2p-net

@@ -6,7 +6,7 @@
 # Rust image: https://hub.docker.com/_/rust
 # Stable version of Rust
 # slim a lightweight variant of the official Rust image, sufficient for the testbed
-FROM rust:1.96.0-slim as builder
+FROM rust:1.96.0-slim-bookworm AS builder
 
 # WORKDIR create the /app folder and changes the working directory to it for all commands
 WORKDIR /app
