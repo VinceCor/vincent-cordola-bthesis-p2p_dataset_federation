@@ -47,7 +47,6 @@ This document will evolve as the project progresses, and the initial information
 | Task | Implement the flat `cache/` + `index.json` storage layer in Python | 19.07 | Upcoming |
 | Task | Implement `P2PClient`, thin HTTP wrapper around the Rust API | 19.07 | Upcoming |
 | Task | Implement `P2PDataset`, cache management and on-demand fetch | 19.07 | Upcoming |
-| Task | End-to-end validation on Docker Compose (fetch on demand, index updated) | 19.07 | Upcoming |
 | **Milestone** | Produce a first working notebook that discovers the network dataset, loads it into standard dataframe tooling, and runs queries spanning multiple peers. | 19.07 | Upcoming |
 | Task | Implement p2p.load(filename), fetch + return pandas Dataframe via DuckDB | 19.07 | Upcoming |
 | Task | Implement p2p.query, DuckDB query across all cached Parquet files | 19.07 | Upcoming |
@@ -695,6 +694,7 @@ This week has again been heavily focused on the overall architecture, with the i
 
 **Work done:**
 - Finish gossip setup guide
+
 **Decisions / Observations / Blockers:**
 
 **Next steps:**
@@ -713,7 +713,29 @@ This week has again been heavily focused on the overall architecture, with the i
 **Next steps:**
 - Progress on axum http server
 
+---
+
+### 26/06/2026
+
+**Work done:**
+- Finish Axum http API
+
+**Decisions / Observations / Blockers:**
+- Since the next task doesn't directly involve the Rust network, I don't need to adapt everything to Docker and i can test it on a single peer.
+
+**Next steps:**
+- Finish documentation about the API implementation
+
 ## Weekly Summary 22/06 - 28/06
+
+**Abstract**
+- Iroh and the API are working very well
+- Everything works very well only with the Cargo build in the terminal, and the three requests are already working fine, which will be a big plus for continuing the project.
+
+**Next week**
+- Start python part (python cache, P2PClient, P2PDataset)
+
+## Weekly Summary 29/06 - 05/07
 
 **Abstract**
 

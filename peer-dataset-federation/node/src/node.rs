@@ -1,4 +1,4 @@
-use iroh::{Endpoint, EndpointId, SecretKey, endpoint::presets, protocol::Router};
+use iroh::{Endpoint, EndpointId, endpoint::presets, protocol::Router};
 use iroh_blobs::{BlobsProtocol, store::mem::MemStore, ticket::BlobTicket};
 use iroh_gossip::{api::Event, net::Gossip, proto::TopicId};
 use n0_error::{Result, StdResultExt};
@@ -253,7 +253,7 @@ pub async fn peer() -> Result<()> {
     // Start the HTTP server as a background task
     let api_state = Arc::new(AppState {
         institution: institution.clone(),
-        fetch_br,
+        fetch_tx,
     });
     tokio::spawn(serve(api_state));
 
@@ -272,7 +272,7 @@ pub async fn peer() -> Result<()> {
                 fetch_downloader
                     .download(ticket.hash(), Some(ticket.addr().id))
                     .await
-                    .map_err(|e| format!("Download error: {e}"))?
+                    .map_err(|e| format!("Download error: {e}"))?;
 
                 let filename = format!("{}.parquet", &ticket.hash().to_string()[..16]);
                 let dest = fetch_cache_dir
@@ -293,12 +293,7 @@ pub async fn peer() -> Result<()> {
             // Send the result back to the HTTP handler via the oneshot channel
             let _ = req.reply.send(result);
         }
-    })
-
-
-
-
-
+    });
 
     // Interactive command loop
     // tokio::io::BufReader wraps stdin so that read_line().await yields control back to the Tokio runtime while waiting for input
