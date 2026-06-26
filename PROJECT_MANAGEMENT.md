@@ -742,3 +742,4 @@ This week has again been heavily focused on the overall architecture, with the i
 - Potential MemStore to FsStore
 - Parquet partial-read optimization
 - tmux (systemd)
+- update all data add / periodical

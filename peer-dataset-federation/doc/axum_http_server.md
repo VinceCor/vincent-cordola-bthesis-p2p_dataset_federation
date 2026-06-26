@@ -10,3 +10,6 @@ Three endpoint are exposed:
 | `/health` | GET | Returns the node status and institution name |
 | `/files` | GET | Reads all manifests from `data/peers_manifest` and returns them merged |
 | `/fetch` | POST | Triggers an iroh-blobs download by ticket, returns the local cache path |
+
+**Why Axum?**   
+Axum is developed by the Tokio team and runs on the same async runtime already use by iroh.
