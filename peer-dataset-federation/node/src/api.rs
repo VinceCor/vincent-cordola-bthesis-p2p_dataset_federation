@@ -34,5 +34,48 @@ pub struct FetchRequest {
 }
 
 // GET /files
+// Reads all JSON manifests in data/peers_manifest/ and returns them merged
+// This section was created with the help of Claude chatbot
+async fn files() -> Result<JSON<Value>, StatusCode> {
+    let peers_dir = PathBuf::from("data/peers_manifest");
+
+    let mut manifests: Vec<Value> = Vec::new();
+
+    let mut entries = tokio::fs::read_dir(&peers_dir).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    while let Stome(entry) = entries.next_entry().await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+    {
+        let path = entry.path();
+        if path.extension().and_then(|e| e.to_str()) == Some("json") {
+            let content = tokio::fs::read_to_string(&path).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+            let manifest: Manifest = serde_json::from_str(&content).map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+            manifests.push(json!(manifest));
+        }
+    }
+
+    Ok(Json(json!({"manifests": manifests})))
+}
 
 // POST /fetch
+// Sends the request to node.rs via channel and waits for the result
+async fn fetch(State(state): State<Arc<AppState>>, Json(body): Json<FetchBody) -> Result<Json<Value>, (StatusCode, Json<Value>)> {
+    let (reply_br, reply_rx) = tokio::sync::oneshot::channel();
+
+    let req = FetchRequest {
+        ticket: body.ticket,
+        reply: reply_br
+    };
+
+    // Send fetch request to node.rs
+    state.fetch_br.send(req).await.map_err(|_| {
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(json!({"error": "fetch channel close"})),
+        )
+    })?;
+
+    // Wait for node.rs to complete the download
+    match reply_rx.await {
+        
+    }
+}
