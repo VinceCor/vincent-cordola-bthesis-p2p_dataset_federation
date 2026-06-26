@@ -1,4 +1,3 @@
-// Code taken from rust-mvp (peer function)
 use iroh::{Endpoint, EndpointId, SecretKey, endpoint::presets, protocol::Router};
 use iroh_blobs::{BlobsProtocol, store::mem::MemStore, ticket::BlobTicket};
 use iroh_gossip::{api::Event, net::Gossip, proto::TopicId};
@@ -6,6 +5,9 @@ use n0_error::{Result, StdResultExt};
 use sha2::{Digest, Sha256};
 use serde::{Deserialize, Serialize};
 use std::{env, path::PathBuf};
+
+use crate::api::{AppState, FetchRequest, serve};
+use std::sync::Arc;
 
 // Manifest
 // The manifest describes what this node possesses: its institution name and,
@@ -243,6 +245,60 @@ pub async fn peer() -> Result<()> {
         .std_context("Unable to crate cache/")?;
 
     let downloader = store.downloader(&endpoint);
+
+    // Channel: Axum /fetch handler -> fetch task
+    // Capacity 32: up to 32 requests can be queued before the sender blocks
+    let (fetch_tx, mut fetch_rx) = tokio::sync::mpsc::channel::<FetchRequest>(32);
+
+    // Start the HTTP server as a background task
+    let api_state = Arc::new(AppState {
+        institution: institution.clone(),
+        fetch_br,
+    });
+    tokio::spawn(serve(api_state));
+
+    // Fetch task: receives FetechRequests from the HTTP handler and runs the iroh download
+    // Runs concurrently with the Router and the gossip task
+    let fetch_downloader = store.downloader(&endpoint);
+    let fetch_cache_dir = cache_dir.clone();
+    let fetch_store = store.clone();
+    tokio::spawn(async move {
+        while let Some(req) = fetch_rx.recv().await {
+            let result = async {
+                let ticket: iroh_blobs::ticket::BlobTicket = req.ticket
+                    .parse()
+                    .map_err(|e| format!("Invalid ticket: {e}"))?;
+
+                fetch_downloader
+                    .download(ticket.hash(), Some(ticket.addr().id))
+                    .await
+                    .map_err(|e| format!("Download error: {e}"))?
+
+                let filename = format!("{}.parquet", &ticket.hash().to_string()[..16]);
+                let dest = fetch_cache_dir
+                    .canonicalize()
+                    .map_err(|e| format!("Cache path error: {e}"))?
+                    .join(&filename);
+
+                fetch_store
+                    .blobs()
+                    .export(ticket.hash(), dest)
+                    .await
+                    .map_err(|e| format!("Export error: {e}"))?;
+
+                Ok::<String, String>(filename)
+            }
+            .await;
+
+            // Send the result back to the HTTP handler via the oneshot channel
+            let _ = req.reply.send(result);
+        }
+    })
+
+
+
+
+
 
     // Interactive command loop
     // tokio::io::BufReader wraps stdin so that read_line().await yields control back to the Tokio runtime while waiting for input
