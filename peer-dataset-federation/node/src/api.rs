@@ -59,7 +59,6 @@ async fn files() -> Result<Json<Value>, StatusCode> {
             manifests.push(json!(manifest));
         }
     }
-
     Ok(Json(json!({"manifests": manifests})))
 }
 
