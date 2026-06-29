@@ -739,6 +739,9 @@ This week has again been heavily focused on the overall architecture, with the i
 ### 29/06/2026
 
 **Work done:**
+- Finish documentation about the API implementation
+- Brainstorm ideas on what to implement before the end of the project / what's needed for the PoC. And separate "nice to have" feature for the future
+- Research how to get started with the Python portion
 
 **Decisions / Observations / Blockers:**
 
