@@ -8,4 +8,5 @@ peer-dataset-federation/node/target/
 peer-dataset-federation/node/data/
 peer-dataset-federation/testbed/data/
 peer-dataset-federation/node/Cargo.lock
+peer-dataset-federation/client/.venv/
 .vscode/
