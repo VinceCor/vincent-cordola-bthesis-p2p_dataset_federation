@@ -43,11 +43,10 @@ This document will evolve as the project progresses, and the initial information
 | **Milestone** | Python client layer: a unified Jupyter interface ensuring required files are present locally via on-demand retrieval. | 19.07 | In progress |
 | Task | Complete the system architecture document with the rest of the project | 19.07 | Done |
 | Task | Add iroh-gossip to the Rust node + generate a JSON manifest listing local files (tickets) and propagate it to peers | 19.07 | Done |
-| Task | Add Axum HTTP server to the Rust node | 19.07 | In progress |
-| Task | Implement the flat `cache/` + `index.json` storage layer in Python | 19.07 | Upcoming |
-| Task | Implement `P2PClient`, thin HTTP wrapper around the Rust API | 19.07 | Upcoming |
-| Task | Implement `P2PDataset`, cache management and on-demand fetch | 19.07 | Upcoming |
-| Task | End-to-end validation on Docker Compose (fetch on demand, index updated) | 19.07 | Upcoming |
+| Task | Add Axum HTTP server to the Rust node | 19.07 | Done |
+| Task | Implement the flat `cache/` + `index.json` storage layer in Python | 19.07 | In progress |
+| Task | Implement `P2PClient`, thin HTTP wrapper around the Rust API | 19.07 | In progress |
+| Task | Implement `P2PDataset`, cache management and on-demand fetch | 19.07 | In progress |
 | **Milestone** | Produce a first working notebook that discovers the network dataset, loads it into standard dataframe tooling, and runs queries spanning multiple peers. | 19.07 | Upcoming |
 | Task | Implement p2p.load(filename), fetch + return pandas Dataframe via DuckDB | 19.07 | Upcoming |
 | Task | Implement p2p.query, DuckDB query across all cached Parquet files | 19.07 | Upcoming |
@@ -695,13 +694,60 @@ This week has again been heavily focused on the overall architecture, with the i
 
 **Work done:**
 - Finish gossip setup guide
+
 **Decisions / Observations / Blockers:**
 
 **Next steps:**
 - Start http Axum
 
+---
+
+### 25/06/2026
+
+**Work done:**
+- Start of the implementation of the HTTP API
+
+**Decisions / Observations / Blockers:**
+- Create a new folder that will serve as the final project folder
+
+**Next steps:**
+- Progress on axum http server
+
+---
+
+### 26/06/2026
+
+**Work done:**
+- Finish Axum http API
+
+**Decisions / Observations / Blockers:**
+- Since the next task doesn't directly involve the Rust network, I don't need to adapt everything to Docker and i can test it on a single peer.
+
+**Next steps:**
+- Finish documentation about the API implementation
 
 ## Weekly Summary 22/06 - 28/06
+
+**Abstract**
+- Iroh and the API are working very well
+- Everything works very well only with the Cargo build in the terminal, and the three requests are already working fine, which will be a big plus for continuing the project.
+
+**Next week**
+- Start python part (python cache, P2PClient, P2PDataset)
+
+---
+### 29/06/2026
+
+**Work done:**
+- Finish documentation about the API implementation
+- Brainstorm ideas on what to implement before the end of the project / what's needed for the PoC. And separate "nice to have" feature for the future
+- Research how to get started with the Python portion
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+
+## Weekly Summary 29/06 - 05/07
 
 **Abstract**
 
@@ -723,10 +769,16 @@ This week has again been heavily focused on the overall architecture, with the i
 
 
 ### Temp todo / nice to have
-- ENV (Topic Id)
-- Local DB
-- Fatest file sharing (2 peers having all the data for example)
-- Temp memory storage to disk
-- Potential MemStore to FsStore
-- Parquet partial-read optimization
+**Todo**
+- VENV (Topic Id), simplify code modification
 - tmux (systemd)
+- update all data add / periodical
+- customizable search filter
+
+
+- Fatest file sharing (2 peers having all the data for example)
+- Temp memory storage to disk (MemStore to FsStore)
+
+**Nice to have, upgrade**
+- Local DB
+- Parquet partial-read optimization
