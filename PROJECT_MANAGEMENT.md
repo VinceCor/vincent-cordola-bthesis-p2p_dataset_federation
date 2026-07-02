@@ -805,9 +805,9 @@ This week has again been heavily focused on the overall architecture, with the i
 **Todo**
 - VENV (Topic Id), simplify code modification
 - tmux (systemd)
-- update all data add / periodical
+- update all data manifest add / periodical
 - customizable search filter
-
+- Chose data folder location, change peers_manifest folder
 
 - Fatest file sharing (2 peers having all the data for example) // flag main sharing
 - Temp memory storage to disk (MemStore to FsStore)
