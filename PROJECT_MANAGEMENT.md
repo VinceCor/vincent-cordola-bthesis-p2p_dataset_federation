@@ -746,6 +746,39 @@ This week has again been heavily focused on the overall architecture, with the i
 **Decisions / Observations / Blockers:**
 
 **Next steps:**
+- Start Python client.py
+
+---
+
+### 30/06/2026
+
+**Work done:**
+- Create P2PError and P2PClient
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+- Test and documentation about this part
+
+### 01/07/2026 (fête du Canada)
+
+**Work done:**
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+
+---
+
+### 02/07/2026
+
+**Work done:**
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+
+
 
 ## Weekly Summary 29/06 - 05/07
 
@@ -776,7 +809,7 @@ This week has again been heavily focused on the overall architecture, with the i
 - customizable search filter
 
 
-- Fatest file sharing (2 peers having all the data for example)
+- Fatest file sharing (2 peers having all the data for example) // flag main sharing
 - Temp memory storage to disk (MemStore to FsStore)
 
 **Nice to have, upgrade**
