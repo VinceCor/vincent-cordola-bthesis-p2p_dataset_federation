@@ -45,7 +45,7 @@ This document will evolve as the project progresses, and the initial information
 | Task | Add iroh-gossip to the Rust node + generate a JSON manifest listing local files (tickets) and propagate it to peers | 19.07 | Done |
 | Task | Add Axum HTTP server to the Rust node | 19.07 | Done |
 | Task | Implement the flat `cache/` + `index.json` storage layer in Python | 19.07 | In progress |
-| Task | Implement `P2PClient`, thin HTTP wrapper around the Rust API | 19.07 | In progress |
+| Task | Implement `P2PClient`, thin HTTP wrapper around the Rust API | 19.07 | Done |
 | Task | Implement `P2PDataset`, cache management and on-demand fetch | 19.07 | In progress |
 | **Milestone** | Produce a first working notebook that discovers the network dataset, loads it into standard dataframe tooling, and runs queries spanning multiple peers. | 19.07 | Upcoming |
 | Task | Implement p2p.load(filename), fetch + return pandas Dataframe via DuckDB | 19.07 | Upcoming |
@@ -773,10 +773,12 @@ This week has again been heavily focused on the overall architecture, with the i
 ### 02/07/2026
 
 **Work done:**
+- Finish documentation and test for P2PClient
 
 **Decisions / Observations / Blockers:**
 
 **Next steps:**
+- Start index.json and P2PDataset
 
 
 

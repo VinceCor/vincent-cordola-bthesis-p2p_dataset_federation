@@ -11,6 +11,11 @@
 
 import requests
 
+class P2PError(Exception):
+    # Raised when the Rust node returns an error or is unreachable
+    pass
+
+
 # Minimal HTTP client for the local Rust node API
 class P2PClient:
 
