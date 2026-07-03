@@ -780,9 +780,29 @@ This week has again been heavily focused on the overall architecture, with the i
 **Next steps:**
 - Start index.json and P2PDataset
 
+---
+
+### 03/07/2026
+
+**Work done:**
+- Progress for dataset.py
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+- Finish dataset.py
+- Start VM / Jupyter
 
 
 ## Weekly Summary 29/06 - 05/07
+
+**Abstract**
+- Implementation of the "bridge" between Python and Rust. HTTP requests to `Axum` via Python `requests` library work very well.
+
+**Next week**
+- Finish this part, then start the implementation using Jupyter Notebooks and a VM
+
+## Weekly Summary 06/07 - 12/07
 
 **Abstract**
 
