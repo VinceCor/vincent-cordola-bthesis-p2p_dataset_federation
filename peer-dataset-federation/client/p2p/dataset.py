@@ -6,6 +6,7 @@ from pathlib import Path
 
 from .client import P2PClient, P2PError
 
+# Convention from https://stackoverflow.com/questions/50714316/how-to-use-logging-getlogger-name-in-multiple-modules
 logger = logging.getLogger(__name__)
 
 cache_dir = (Path(__file__).resolve().parent / "../../node/cache").resolve()

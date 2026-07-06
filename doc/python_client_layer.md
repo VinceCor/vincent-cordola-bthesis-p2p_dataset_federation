@@ -145,3 +145,81 @@ try:
 except P2PError as e:
     print(e)
 ```
+
+## 4. dataset.py
+
+### 4.1 Dependencies
+
+| Import | Role |
+|---|---|
+| `P2PClient` | HTTP calls to the Rust node |
+| `P2PError` | Exception propagated on network failure |
+| `logging` | Standard Python logging |
+| `pathlib.Path` | Filesystem path manipulation |
+
+### 4.2 Constants
+> References: [python loggin getLogger](https://docs.python.org/3/library/logging.html#logging.getLogger)
+
+`logging.getLogger(__name__)` creates a logger named `p2p.dataset`
+```Python
+# Convention from https://stackoverflow.com/questions/50714316/how-to-use-logging-getlogger-name-in-multiple-modules
+logger = logging.getLogger(__name__)
+
+cache_dir = (Path(__file__).resolve().parent / "../../node/cache").resolve()
+```
+
+`cache_dir` locates `node/cache/` from `__file__` (the absolute path of `dataset.py` at import time), navigating `../../node/cache` relative to `client/p2p`. This works regardless of the directory from which the notebook is launched.
+
+### 4.3 `files()`
+
+Calls `GET /files` once and flattens the nested manifest structure into a simple list.
+```Python
+def files(self) -> list[dict]:
+    response = self._client.files()
+    return [
+        {"file_name": f["file_name"], "institution": manifest.get("institution", "unknown")}
+        for manifest in response.get("manifests", [])
+        for f in manifest.get("files", [])
+    ]
+```
+
+### 4.4 `get()`
+**Why an explicit loop here instead of a list comprehension?**  
+`get()` needs to stop as soon as a match is found (`break`). List comprehension always walk the entire list. An explicit loop with `break` is more efficient and clearer when early exit is the goal.
+```Python
+def get(self, file_name: str) -> Path | None:
+    # Walk all peer manifests to find the file
+    response = self._client.files()
+    entry = None
+    for manifest in response.get("manifests", []):
+        for f in manifest.get("files", []):
+            if f["file_name"] == file_name:
+                entry = f | {"institution": manifest.get("institution", "unknown")}
+                break
+        if entry is not None:
+            break
+```
+`entry = f | {"institution": manifest.get("institution", "unknown")}`   
+`f` is the file dict from the manifest. The `|` operator merges two dicts into a new one. The result is a flat dict with all four fileds, go `get()` can wrote `entry["hash"]` and `entry["ticket"]` directly.
+
+```Python
+if entry is None:
+    logger.warning("'%s' not found in any peer manifest", file_name)
+    return None
+
+# Derive the expected cache path from the BLAKE3 hash
+cached = cache_dir / f"{entry['hash'][:16]}.parquet"
+
+if cached.exists():
+    logger.info("cache hit: %s", file_name)
+    return cached
+
+# Not on disk: fetch via the Rust node
+logger.info("fetching '%s' from %s ...", file_name, entry["institution"])
+self._client.fetch(entry["ticket"])
+logger.info("saved -> %s", cached)
+
+return cached
+```
+`entry['hash'][:16]` takes the first 16 character of the BLAKE3 hash. The Rust node uses this exact slice to name the exported file. `cached.exists()` checks the disk, if the file is there, it is already a verified Parquet file and can be returned immediately with no network call.   
+`self._client.fetch(entry["ticket"])` triggers `POST /fetch` on the Rust node. The return value (the relative path string) is not used here: `chached` was already computed from the hash and points to the same file. If the fetch fails, `P2PClient` raises `P2PError`, which propagates to the notebook, the user sees the full error rather than a silent `None`.

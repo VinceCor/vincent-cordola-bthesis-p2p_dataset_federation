@@ -802,6 +802,17 @@ This week has again been heavily focused on the overall architecture, with the i
 **Next week**
 - Finish this part, then start the implementation using Jupyter Notebooks and a VM
 
+### 06/07/2026
+
+**Work done:**
+- Progress for dataset.py docuementation
+
+**Decisions / Observations / Blockers:**
+- Possible schedule adjustment, as the code delivery date will be moved from the end of week 14 to week 10.
+
+**Next steps:**
+- Finish dataset.py documentation, p2p.load and p2p.query
+
 ## Weekly Summary 06/07 - 12/07
 
 **Abstract**
