@@ -3,6 +3,7 @@
 
 import logging
 from pathlib import Path
+import pandas as pd
 
 from .client import P2PClient, P2PError
 
@@ -56,3 +57,26 @@ class P2PDataset:
         logger.info("saved -> %s", cached)
 
         return cached
+    
+    # Load a single file from the network into pandas DataFrame
+    def load(self, file_name: str) -> pd.DataFrame:
+        path = self.get(file_name)
+        if path is None:
+            raise P2PError(f"'{file_name}' not found on the network")
+        logger.info("loading '%s' into dataframe", file_name)
+        return pd.read_parquet(path)
+    
+    # Fetch a specific set of files, chosen by name, from the network
+    # Each file is resolved and fetchted independently (no merging)
+    def query(self, *file_names: str) -> dict[str, pd.DataFrame]:
+        if not file_names:
+            raise P2PError("query() requires at least one file name, e.g. query('sample.parquet')")
+        
+        results: dict[str, pd.DataFrame] = {}
+        for name in file_names:
+            path = self.get(name)
+            if path is None:
+                logger.warning("'%s' not found on the network, skipping", name)
+                continue
+            results[name] = pd.read_parquet(path)
+        return results

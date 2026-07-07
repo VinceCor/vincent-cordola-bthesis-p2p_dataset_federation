@@ -107,9 +107,6 @@ def raise_for_status(response: requests.Response) -> None:
 It inspects a `Response` object and converts a non 200 status into a `P2PError` with a useful message. It tries to extract the "error" filed the Rust API puts in its JSON error bodies, and falls back to the raw response text if the body isn't JSON, or doesn't contain that field.
 
 
-
-
-
 ### 3.6 Result
 #### 3.61 Install python library
 If you haven't alreadym install the requests library.
@@ -246,3 +243,5 @@ df = pd.read_parquet(path)
 df.head()
 
 ```
+
+## 5. Python query layer: load() and query()
