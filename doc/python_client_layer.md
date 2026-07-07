@@ -223,3 +223,26 @@ return cached
 ```
 `entry['hash'][:16]` takes the first 16 character of the BLAKE3 hash. The Rust node uses this exact slice to name the exported file. `cached.exists()` checks the disk, if the file is there, it is already a verified Parquet file and can be returned immediately with no network call.   
 `self._client.fetch(entry["ticket"])` triggers `POST /fetch` on the Rust node. The return value (the relative path string) is not used here: `chached` was already computed from the hash and points to the same file. If the fetch fails, `P2PClient` raises `P2PError`, which propagates to the notebook, the user sees the full error rather than a silent `None`.
+
+### 4.5 Result
+Example of use
+```Python
+import logging
+import pandas as pd
+from p2p.client import P2PClient
+from p2p.dataset import P2PDataset
+
+logging.basicConfig(level=logging.INFO)
+
+client = P2PClient("http://localhost:8080")
+dataset = P2PDataset(client)
+
+print(dataset.files())
+
+path = dataset.get("sample.parquet")
+
+df = pd.read_parquet(path)
+
+df.head()
+
+```

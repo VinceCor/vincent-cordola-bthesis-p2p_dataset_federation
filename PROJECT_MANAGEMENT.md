@@ -20,7 +20,7 @@ This document will evolve as the project progresses, and the initial information
 - **Milestone:** Tasks included in the PDF: [Donnée du travail de bachelor](https://isc-hei.github.io/isc-typst-tb-descriptions/)
 - **Task:** Tasks created during the project to provide a clearer overview of the various steps to be completed
 
-| Weeks | Deliverable | Target date | Status |
+| Type | Deliverable | Target date | Status |
 |---|-------------|-------------|--------|
 | W1-W2 | **1. Onboarding & Technical Design** | 11.05 - 24.05 | Done |
 | **Milestone** | Rust & iroh crash-course completed | 24.05 | Done |
@@ -67,6 +67,27 @@ This document will evolve as the project progresses, and the initial information
 | **Milestone** | **Final report submitted** | **25/08/2026 12:00** | Upcoming |
 | **Milestone** | **Executive summary** | **25/08/2026** | Upcoming |
 | **Milestone** | **Poster** | **25/08/2026** | Upcoming |
+
+#### 1.11 Milestone V1, deadline friday 18.07
+Due to a potential change in the deadline for submitting the code (Week 15has been moved to Week 10), here is an update to accommodate this change.
+
+| Type | Deliverable | Target date | Status |
+|---|-------------|-------------|--------|
+| Task | Implement `p2p.load(filename)`, fetch + return pandas DataFrame | 18.07 | In progress |
+| Task | Implement `p2p.query(sql)`, fetch all network files then run DuckDB query | 18.07 | In progress |
+| Task | Write demo notebook (discover -> load -> query across 2 peers) | 18.07 | Upcoming |
+| Task | Set up 2 VirtualBox VMs | 18.07 | Upcoming |
+| Task | Deploy Rust node on both VM | 18.07 | Upcoming |
+| Task | Validate NAT traversal and relay fallback via iroh logs | 18.07 | Upcoming |
+| Task | End-to-end validation: run demo notebook against 2 live VMs | 18.07 | Upcoming |
+| Task | Update system architecture docuemnt (Python layer + full data flow) | 18.07 | Upcoming |
+| Task | Write installation guide | 18.07 | Upcoming |
+| Task | Write README (project overview, quickstart, project structure) | 18.07 | Upcoming |
+| Task | Add basic customizable filter | 18.07 | Upcoming |
+| Task | VENV (topic id), simplify code modification, chose data directory place | 18.07 | Upcoming |
+| Task | tmux? | 18.07 | Upcoming |
+| Task | update all data manifest, need to be updated when file added to data directory and send to other after that | 18.07 | Upcoming |
+
 
 ### 1.2 Key Milestones
 
@@ -835,11 +856,11 @@ This week has again been heavily focused on the overall architecture, with the i
 
 ### Temp todo / nice to have
 **Todo**
-- VENV (Topic Id), simplify code modification
-- tmux (systemd)
-- update all data manifest add / periodical
+what
+- VENV (Topic Id), simplify code modification, chose data directory place
+- tmux?
+- update all data manifest add / periodical (need to be updated when file added to data directory and send to other after that)
 - customizable search filter
-- Chose data folder location, change peers_manifest folder
 
 - Fatest file sharing (2 peers having all the data for example) // flag main sharing
 - Temp memory storage to disk (MemStore to FsStore)
