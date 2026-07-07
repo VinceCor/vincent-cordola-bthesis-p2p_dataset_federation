@@ -4,6 +4,7 @@
 import logging
 from pathlib import Path
 import pandas as pd
+import duckdb
 
 from .client import P2PClient, P2PError
 
@@ -80,3 +81,27 @@ class P2PDataset:
                 continue
             results[name] = pd.read_parquet(path)
         return results
+    
+    # Fetch a specific set of files, chosen by name, and expose them together 
+    # as a single DuckDB view called 'dataset', so they can be queried with one SQL statement across peers.
+    def federate(self, *file_names: str) -> duckdb.DuckDBPyConnection:
+        if not file_names:
+            raise P2PError("federate() requires at least one file name, e.g. federate('sample.parquet')")
+        
+        paths = []
+        for name in file_names:
+            path = self.get(name)
+            if path is None:
+                logger.warning("'%s' not found on the network, skipping,", name)
+                continue
+
+            paths.append(str(path))
+
+        if not paths:
+            raise P2PError("none of the requested files could be found on the network")
+        
+        con = duckdb.connect()
+        paths_str = [str(p) for p in paths]
+        con.execute(f"CREATE VIEW dataset AS SELECT * FROM read_parquet({paths_str!r})")
+        logger.info("federated view 'dataset' created from %d file(s)", len(paths))
+        return con
