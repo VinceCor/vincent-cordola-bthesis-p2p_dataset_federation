@@ -245,3 +245,85 @@ df.head()
 ```
 
 ## 5. Python query layer: load() and query()
+
+### 5.1 load()
+`load()` is a thin wrapper around `get()`. If `get()` returns `None`, the file does not exist in any peer manifest, `load()` turns this into `P2PError` rather than silently returning `None`, so the failure is visible immediately in the notebook. `pd.read_parquet(path)` ready the file directoy from `cache/`, no network call happens here.
+```Python
+# Load a single file from the network into pandas DataFrame
+def load(self, file_name: str) -> pd.DataFrame:
+    path = self.get(file_name)
+    if path is None:
+        raise P2PError(f"'{file_name}' not found on the network")
+    logger.info("loading '%s' into dataframe", file_name)
+    return pd.read_parquet(path)
+```
+Use in notebook
+```Python
+# load(): single file as a DataFrame
+df = dataset.load("iris.parquet")
+df.head()
+```
+
+### 5.2 query()
+`query()` takes one or more file names as arguments, for example `data.query("sample.parquer", "orther_sample.parquet")`. The researcher is expected to call `dataset.files()` first to see what's available on the network, then pass the name they actually want.
+```Python
+# Fetch a specific set of files, chosen by name, from the network
+# Each file is resolved and fetchted independently (no merging)
+def query(self, *file_names: str) -> dict[str, pd.DataFrame]:
+    if not file_names:
+        raise P2PError("query() requires at least one file name, e.g. query('sample.parquet')")
+    
+    results: dict[str, pd.DataFrame] = {}
+    for name in file_names:
+        path = self.get(name)
+        if path is None:
+            logger.warning("'%s' not found on the network, skipping", name)
+            continue
+        results[name] = pd.read_parquet(path)
+    return results
+```
+Use in notebook
+```Python
+results = dataset.query("iris.parquet","titanic.parquet","test.parquet")
+
+for name, df in results.items():
+    print(name, df.shape)
+```
+
+### 5.3 federate()
+`federate()` mirrors `query()`s argument handling on purpose: at leat one file name required, each name resolved through `get()`, missing files logged as a warning and skipped rather tan failing the whole call. The difference is only in what happens after the files are on disk.  
+`read_parquet()` accepts a list of paths and unions them by column name into one relation, exposed as the view `dataset`.
+
+```Python
+# Fetch a specific set of files, chosen by name, and expose them together 
+# as a single DuckDB view called 'dataset', so they can be queried with one SQL statement across peers.
+def federate(self, *file_names: str) -> duckdb.DuckDBPyConnection:
+    if not file_names:
+        raise P2PError("federate() requires at least one file name, e.g. federate('sample.parquet')")
+    
+    paths = []
+    for name in file_names:
+        path = self.get(name)
+        if path is None:
+            logger.warning("'%s' not found on the network, skipping,", name)
+            continue
+
+        paths.append(str(path))
+
+    if not paths:
+        raise P2PError("none of the requested files could be found on the network")
+    
+    con = duckdb.connect()
+    paths_str = [str(p) for p in paths]
+    con.execute(f"CREATE VIEW dataset AS SELECT * FROM read_parquet({paths_str!r})")
+    logger.info("federated view 'dataset' created from %d file(s)", len(paths))
+    return con
+```
+Use in notebook
+```Python
+con = dataset.federate("yellow_tripdata_2026-01.parquet","yellow_tripdata_2026-02.parquet")
+
+df2 = con.sql("""SELECT * FROM dataset WHERE "passenger_count" > 2 """).df()
+
+df2
+```

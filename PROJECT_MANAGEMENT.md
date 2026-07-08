@@ -39,7 +39,7 @@ This document will evolve as the project progresses, and the initial information
 | Task | Write the docker-compose.yml | 21.06 | Done |
 | Task | Manual ticket exchange | 21.06 | Done |
 | Task | End-to-end validation | 21.06 | Done |
-| W7-W10 | **3. Python/Jupyter integration and connectivity validation** | 22.06 - 19.07 | In progress |
+| W7-W10 | **3. Python/Jupyter integration and connectivity validation** | 22.06 - 19.07 | Done |
 | **Milestone** | Python client layer: a unified Jupyter interface ensuring required files are present locally via on-demand retrieval. | 19.07 | Done |
 | Task | Complete the system architecture document with the rest of the project | 19.07 | Done |
 | Task | Add iroh-gossip to the Rust node + generate a JSON manifest listing local files (tickets) and propagate it to peers | 19.07 | Done |
@@ -47,8 +47,8 @@ This document will evolve as the project progresses, and the initial information
 | Task | Implement `P2PClient`, thin HTTP wrapper around the Rust API | 19.07 | Done |
 | Task | Implement `P2PDataset`, cache management and on-demand fetch | 19.07 | Done |
 | **Milestone** | Produce a first working notebook that discovers the network dataset, loads it into standard dataframe tooling, and runs queries spanning multiple peers. | 19.07 | Upcoming |
-| Task | Implement p2p.load(filename), fetch + return pandas Dataframe via DuckDB | 19.07 | Upcoming |
-| Task | Implement p2p.query, DuckDB query across all cached Parquet files | 19.07 | Upcoming |
+| Task | Implement p2p.load(filename), fetch + return pandas Dataframe via DuckDB | 19.07 | Done |
+| Task | Implement p2p.query, DuckDB query across all cached Parquet files | 19.07 | Done |
 | Task | Write demo notebooks | 19.07 | Upcoming |
 | Task | End-to-end validation VM | 19.07 | Upcoming |
 | **Milestone** | Migrate the testbed to virtual machines with separate network stacks to exercise NAT traversal and relay fallback for the first time. | 19.07 | Upcoming |
@@ -73,8 +73,8 @@ Due to a potential change in the deadline for submitting the code (Week 15has be
 
 | Type | Deliverable | Target date | Status |
 |---|-------------|-------------|--------|
-| Task | Implement `p2p.load(filename)`, fetch + return pandas DataFrame | 18.07 | In progress |
-| Task | Implement `p2p.query(sql)`, fetch all network files then run DuckDB query | 18.07 | In progress |
+| Task | Implement `p2p.load(filename)`, fetch + return pandas DataFrame | 18.07 | Done |
+| Task | Implement `p2p.query(sql)`, fetch all network files then run DuckDB query | 18.07 | Done |
 | Task | Write demo notebook (discover -> load -> query across 2 peers) | 18.07 | Upcoming |
 | Task | Set up 2 VirtualBox VMs | 18.07 | Upcoming |
 | Task | Deploy Rust node on both VM | 18.07 | Upcoming |
@@ -832,6 +832,18 @@ This week has again been heavily focused on the overall architecture, with the i
 
 **Next steps:**
 - Finish dataset.py documentation, p2p.load and p2p.query
+
+### 07/07/2026
+
+**Work done:**
+- Finish dataset.py
+- new planing for next week
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+- End dataset.py documentation
+- requirements.txt, data folder, manifest update
 
 ## Weekly Summary 06/07 - 12/07
 
