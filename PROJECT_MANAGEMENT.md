@@ -833,6 +833,8 @@ This week has again been heavily focused on the overall architecture, with the i
 **Next steps:**
 - Finish dataset.py documentation, p2p.load and p2p.query
 
+---
+
 ### 07/07/2026
 
 **Work done:**
@@ -844,6 +846,20 @@ This week has again been heavily focused on the overall architecture, with the i
 **Next steps:**
 - End dataset.py documentation
 - requirements.txt, data folder, manifest update
+
+---
+
+### 08/07/2026
+
+**Work done:**
+- Finish dataset.py documentation
+- Start Installation guide mardown
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+- Finish installation guide
+- Test on 2 VM
 
 ## Weekly Summary 06/07 - 12/07
 
