@@ -95,3 +95,43 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
+`requirements.txt` covers the client library itself (`requests`, `pandas`, `duckdb`). If it does not yet include Jupyter, add it:
+```bash
+pip install jupyterlab
+```
+To leave the virtual environment later: `deactivate`.
+
+## 9. Running a notebook
+A minimal walkthrough, in case you want to reproduce it cell by cell:
+```Python
+import logging
+import pandas as pd
+from p2p.client import P2PClient # HTTP wrapper: talks to the Rust node
+from p2p.dataset import P2PDataset # Cache + query layer: files(), load(), query(), federate()
+
+# Show INFO-level logs (cache hits/misses, fetch calls) directly in the notebook
+logging.basicConfig(level=logging.INFO)
+
+# Connect to the local Rust node
+client = P2PClient("http://localhost:8080")
+# High-level entry point: everything below goes through this object
+dataset = P2PDataset(client)
+
+# 1. Discover what is available on the network
+dataset.files()
+
+# 2. load a single file (fetches it into cache/ if not already there)
+df = dataset.load("sample.parquet")
+df.head()
+
+# 3. Query several files independently
+results = dataset.query("sample.parquet","orther_sample.parquet")
+for name, df in results.items():
+    print(name, df.shape)
+
+# 4. Federate several files into one DuckDB view and run SQL across them
+con = dataset.federate("sample.parquet","orther_sample.parquet")
+
+df = con.sql("""SELECT * FROM dataset WHERE "passenger_count" > 2 """).df()
+
+```
