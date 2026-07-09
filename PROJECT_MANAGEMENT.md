@@ -861,6 +861,20 @@ This week has again been heavily focused on the overall architecture, with the i
 - Finish installation guide
 - Test on 2 VM
 
+---
+
+### 09/07/2026
+
+**Work done:**
+- add parquet metadata in the manifest
+- installation documentation
+- Installation of Debian VM for the next test
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+- Finish dataset.files() to make it easier to read
+- test on 2 VM
+
 ## Weekly Summary 06/07 - 12/07
 
 **Abstract**
