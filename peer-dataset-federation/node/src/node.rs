@@ -82,6 +82,41 @@ fn bootstrap_peers_from_env() -> Result<Vec<EndpointId>> {
     Ok(peers)
 }
 
+
+// Parquet file reader function (footer only)
+// docs.rs/parquet https://docs.rs/parquet/latest/parquet/
+// module metadata https://docs.rs/parquet/latest/parquet/file/metadata/index.html
+// This function was also made with the help of claude chatbot
+fn read_parquet_stats(path: &Path) -> Result<ParquetStats> {
+    let files = File::open(path).std_context("Unable to open parquet file for metadata")?;
+    let file_size_bytes = file
+        .metadata()
+        .std_context("Unable to read file size")?
+        .len();
+
+    let reader = SerializedFileReader::new(file).std_context("Unable to read parquet footer")?;
+    let metadata = reader.metadata();
+    let file_meta = metadata.file_metadata();
+
+    let columns = file_meta
+        .schema_descr()
+        .columns()
+        .iter()
+        .map(|col| ColumnMeta {
+            name: col.name().to_string(),
+            physical_type: col.physical_type().to_string(),
+        })
+        .collect();
+
+    Ok(ParquetStats{
+        num_rows: file_meta.num_rows(),
+        num_row_groups: metadata.num_row_groups() as i64,
+        file_size_bytes,
+        columns,
+    })
+}
+
+
 // Scans /data for .parquet files, hashes each one into `store`, and returns the resulting manifest entries.
 // Same scan/hash as `peer()`, just collected into a Vec<ManifestFile> instead of only printing
 async fn build_local_manifest_files(store: &MemStore, endpoint_id: EndpointId) -> Result<Vec<ManifestFile>> {
@@ -109,10 +144,13 @@ async fn build_local_manifest_files(store: &MemStore, endpoint_id: EndpointId) -
             // BlobTicket -> Blake 3 hash of the file + listener's EndpointId
             let ticket = BlobTicket::new(endpoint_id.into(), tag.hash, tag.format);
 
+            let stats = read_parquet_stats(&abs_path)?;
+
             files.push(ManifestFile {
                 file_name: filename,
                 hash: tag.hash.to_string(),
                 ticket: ticket.to_string(),
+                stats,
             });
         }
     }
