@@ -5,6 +5,8 @@ use n0_error::{Result, StdResultExt};
 use sha2::{Digest, Sha256};
 use serde::{Deserialize, Serialize};
 use std::{env, path::PathBuf};
+use parquet::file::reader::{fileReader, SerializedFileReader};
+use std::fs::File;
 
 use crate::api::{AppState, FetchRequest, serve};
 use std::sync::Arc;
@@ -21,6 +23,7 @@ pub struct ManifestFile {
     pub file_name: String,
     pub hash: String,
     pub ticket: String,
+    pub stats: ParquetStats,
 }
 
 // The manifest broadcast by a peer
@@ -29,6 +32,24 @@ pub struct Manifest {
     pub institution: String,
     pub files: Vec<ManifestFile>,
 }
+
+// A column in the Parquet schema
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ColumnMeta {
+    pub name: Strig,
+    pub physical_type: String,
+}
+
+// Stats taken from the Parquet footer
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ParquetStats {
+    pub num_rows: i64,
+    pub num_row_groups: i64,
+    pub file_size_bytes: u64,
+    pub columns: Vec<ColumnMeta>,
+}
+
+
 
 // Derives a stable 32-byte gossip TopicId
 // https://docs.iroh.computer/connecting/gossip#picking-a-topic-id
