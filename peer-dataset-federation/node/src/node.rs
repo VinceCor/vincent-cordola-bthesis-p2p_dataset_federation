@@ -4,8 +4,8 @@ use iroh_gossip::{api::Event, net::Gossip, proto::TopicId};
 use n0_error::{Result, StdResultExt};
 use sha2::{Digest, Sha256};
 use serde::{Deserialize, Serialize};
-use std::{env, path::PathBuf};
-use parquet::file::reader::{fileReader, SerializedFileReader};
+use std::{env, path::{Path, PathBuf}};
+use parquet::file::reader::{FileReader, SerializedFileReader};
 use std::fs::File;
 
 use crate::api::{AppState, FetchRequest, serve};
@@ -36,8 +36,8 @@ pub struct Manifest {
 // A column in the Parquet schema
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ColumnMeta {
-    pub name: Strig,
-    pub physical_type: String,
+    pub name: String,
+    pub c_type: String,
 }
 
 // Stats taken from the Parquet footer
@@ -88,7 +88,7 @@ fn bootstrap_peers_from_env() -> Result<Vec<EndpointId>> {
 // module metadata https://docs.rs/parquet/latest/parquet/file/metadata/index.html
 // This function was also made with the help of claude chatbot
 fn read_parquet_stats(path: &Path) -> Result<ParquetStats> {
-    let files = File::open(path).std_context("Unable to open parquet file for metadata")?;
+    let file = File::open(path).std_context("Unable to open parquet file for metadata")?;
     let file_size_bytes = file
         .metadata()
         .std_context("Unable to read file size")?
@@ -104,7 +104,7 @@ fn read_parquet_stats(path: &Path) -> Result<ParquetStats> {
         .iter()
         .map(|col| ColumnMeta {
             name: col.name().to_string(),
-            physical_type: col.physical_type().to_string(),
+            c_type: col.physical_type().to_string(),
         })
         .collect();
 
@@ -133,6 +133,8 @@ async fn build_local_manifest_files(store: &MemStore, endpoint_id: EndpointId) -
             let abs_path = path.canonicalize().std_context("Absolute path not found")?;
             let filename = path.file_name().unwrap().to_string_lossy().to_string();
 
+            let stats = read_parquet_stats(&abs_path)?;
+
             // add_path hashes the file and returns a tag (hash + format)
             // The "tag" prevents the store's garbage collector from deleting the blob
             let tag = store
@@ -143,8 +145,6 @@ async fn build_local_manifest_files(store: &MemStore, endpoint_id: EndpointId) -
 
             // BlobTicket -> Blake 3 hash of the file + listener's EndpointId
             let ticket = BlobTicket::new(endpoint_id.into(), tag.hash, tag.format);
-
-            let stats = read_parquet_stats(&abs_path)?;
 
             files.push(ManifestFile {
                 file_name: filename,
