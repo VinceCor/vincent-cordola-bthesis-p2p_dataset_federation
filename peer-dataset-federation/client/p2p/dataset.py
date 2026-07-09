@@ -22,11 +22,21 @@ class P2PDataset:
     # List every file visible across all peer manifests
     def files(self) -> list[dict]:
         response = self._client.files()
-        return [
-            {"file_name": f["file_name"], "institution": manifest.get("institution", "unknown")}
-            for manifest in response.get("manifests", [])
-            for f in manifest.get("files", [])
-        ]        
+        result = []
+        for manifest in response.get("manifests", []):
+            institution = manifest.get("institution", "unknown")
+            for f in manifest.get("files", []):
+                stats = f.get("stats", {})
+                result.append({
+                    "file_name": f["file_name"],
+                    "institution": institution,
+                    "num_rows": stats.get("num_rows"),
+                    "num_row_groups": stats.get("num_row_groups"),
+                    "file_size_bytes": stats.get("file_size_bytes"),
+                    "columns": stats.get("columns", []),
+                })
+        return result
+
 
     # Return a local Path to a *file_name*, fetching it from the network if it is not already cached.
     def get(self, file_name: str) -> Path | None:
