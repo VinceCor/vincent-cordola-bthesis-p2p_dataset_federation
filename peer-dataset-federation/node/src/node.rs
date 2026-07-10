@@ -4,7 +4,9 @@ use iroh_gossip::{api::Event, net::Gossip, proto::TopicId};
 use n0_error::{Result, StdResultExt};
 use sha2::{Digest, Sha256};
 use serde::{Deserialize, Serialize};
-use std::{env, path::PathBuf};
+use std::{env, path::{Path, PathBuf}};
+use parquet::file::reader::{FileReader, SerializedFileReader};
+use std::fs::File;
 
 use crate::api::{AppState, FetchRequest, serve};
 use std::sync::Arc;
@@ -21,6 +23,7 @@ pub struct ManifestFile {
     pub file_name: String,
     pub hash: String,
     pub ticket: String,
+    pub stats: ParquetStats,
 }
 
 // The manifest broadcast by a peer
@@ -29,6 +32,24 @@ pub struct Manifest {
     pub institution: String,
     pub files: Vec<ManifestFile>,
 }
+
+// A column in the Parquet schema
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ColumnMeta {
+    pub name: String,
+    pub c_type: String,
+}
+
+// Stats taken from the Parquet footer
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ParquetStats {
+    pub num_rows: i64,
+    pub num_row_groups: i64,
+    pub file_size_bytes: u64,
+    pub columns: Vec<ColumnMeta>,
+}
+
+
 
 // Derives a stable 32-byte gossip TopicId
 // https://docs.iroh.computer/connecting/gossip#picking-a-topic-id
@@ -61,6 +82,41 @@ fn bootstrap_peers_from_env() -> Result<Vec<EndpointId>> {
     Ok(peers)
 }
 
+
+// Parquet file reader function (footer only)
+// docs.rs/parquet https://docs.rs/parquet/latest/parquet/
+// module metadata https://docs.rs/parquet/latest/parquet/file/metadata/index.html
+// This function was also made with the help of claude chatbot
+fn read_parquet_stats(path: &Path) -> Result<ParquetStats> {
+    let file = File::open(path).std_context("Unable to open parquet file for metadata")?;
+    let file_size_bytes = file
+        .metadata()
+        .std_context("Unable to read file size")?
+        .len();
+
+    let reader = SerializedFileReader::new(file).std_context("Unable to read parquet footer")?;
+    let metadata = reader.metadata();
+    let file_meta = metadata.file_metadata();
+
+    let columns = file_meta
+        .schema_descr()
+        .columns()
+        .iter()
+        .map(|col| ColumnMeta {
+            name: col.name().to_string(),
+            c_type: col.physical_type().to_string(),
+        })
+        .collect();
+
+    Ok(ParquetStats{
+        num_rows: file_meta.num_rows(),
+        num_row_groups: metadata.num_row_groups() as i64,
+        file_size_bytes,
+        columns,
+    })
+}
+
+
 // Scans /data for .parquet files, hashes each one into `store`, and returns the resulting manifest entries.
 // Same scan/hash as `peer()`, just collected into a Vec<ManifestFile> instead of only printing
 async fn build_local_manifest_files(store: &MemStore, endpoint_id: EndpointId) -> Result<Vec<ManifestFile>> {
@@ -77,6 +133,8 @@ async fn build_local_manifest_files(store: &MemStore, endpoint_id: EndpointId) -
             let abs_path = path.canonicalize().std_context("Absolute path not found")?;
             let filename = path.file_name().unwrap().to_string_lossy().to_string();
 
+            let stats = read_parquet_stats(&abs_path)?;
+
             // add_path hashes the file and returns a tag (hash + format)
             // The "tag" prevents the store's garbage collector from deleting the blob
             let tag = store
@@ -92,6 +150,7 @@ async fn build_local_manifest_files(store: &MemStore, endpoint_id: EndpointId) -
                 file_name: filename,
                 hash: tag.hash.to_string(),
                 ticket: ticket.to_string(),
+                stats,
             });
         }
     }
