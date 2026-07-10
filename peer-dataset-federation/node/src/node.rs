@@ -182,7 +182,7 @@ async fn save_peer_manifest(manifest: &Manifest) -> Result<()> {
 // 
 // Configuration is read from the environment
 // INSTITUTION  | required, the name advertised in this node's manifest
-// BOOTSTRAP_PEERS | optional, EndpointIds already in the gossip swarm, leave empty for the first peer
+// BOOTSTRAP_PEERS | optional, EndpointIds already in the gossip swarm, leave empty for the first pee
 //
 // Commands:
 //      - fetch <ticket> | download the file identified by the ticket
@@ -230,6 +230,9 @@ pub async fn peer() -> Result<()> {
         .std_context("Error subscibing to gossip topic")?
         .split();
 
+    // Split between gossip_task (initial broadcast) and the stdin loop (manual refresh)
+    let sender = Arc::new(tokio::sync::Mutex::new(sender));
+
     let local_manifest = Manifest {
         institution: institution.clone(),
         files: local_files, 
@@ -242,6 +245,11 @@ pub async fn peer() -> Result<()> {
     // 1. waits until at least one peer has joined the topic
     // 2. broadcasts our manifest once connected
     // 3. then listens for manifests broadcast by other peers and saves them to data/peers_manifest
+    let gossip_sender = sender.clone();
+    let gossip_store = store.clone();
+    let gossip_institution = institution.clone();
+    let gossip_endpoint_id = endpoint.id();
+
     let gossip_task = tokio::spawn(async move {
         if !bootstrap.is_empty() {
             if let Err(e) = receiver.joined().await {
@@ -249,18 +257,29 @@ pub async fn peer() -> Result<()> {
             }
         }
 
-        let payload = match serde_json::to_vec(&local_manifest) {
-            Ok(p) => p,
-            Err(e) => {
-                eprintln!("Gossip: error serializing local manifest: {e}");
-                return;
+        match build_local_manifest_files(&gossip_store, gossip_endpoint_id).await {
+            Ok(files) => {
+                let manifest = Manifest {institution: gossip_institution.clone(), files};
+                if let Err(e) = save_peer_manifest(&manifest).await {
+                    eprintln!("Gossip: error saving local manifest: {e}");
+                }
+                match serde_json::to_vec(&manifest) {
+                    Ok(payload) => {
+                        let guard = gossip_sender.lock().await;
+                        if let Err(e) = guard.broadcast(payload.into()).await {
+                            eprintln!("Gossip: error broadcasting manifest: {e}");
+                        } else {
+                            println! (
+                                "Gossip: initial manifest broadcast for institution '{}' ({} file(s))",
+                                manifest.institution,
+                                manifest.files.len()
+                            );
+                        }
+                    }
+                    Err(e) => eprintln!("Gossip: error serializing manifest: {e}")
+                }
             }
-        };
-
-        if let Err(e) = sender.broadcast(payload.into()).await {
-            eprintln!("Gossip: error broadcasting manifest: {e}");
-        } else {
-            println!("Gossip: manifest broadcast for institution '{}'", local_manifest.institution);
+            Err(e) => eprintln!("Gossip: error scanning data/: {e}")
         }
 
         // n0_future::StreamExt is required for '.next()' on the gossip receiver.
@@ -398,6 +417,30 @@ pub async fn peer() -> Result<()> {
                         Err(e) => println!("Download error: {e}"),
                 }
             }
+
+            // refresh
+            _ if line == "refresh" => {
+                match build_local_manifest_files(&store, endpoint.id()).await {
+                    Ok(files) => {
+                        let manifest = Manifest { institution: institution.clone(), files };
+                        match save_peer_manifest(&manifest).await {
+                            Ok(_) => match serde_json::to_vec(&manifest) {
+                                Ok(payload) => {
+                                    let guard = sender.lock().await;
+                                    match guard.broadcast(payload.into()).await {
+                                        Ok(_) => println!("Manifest rebroadcast ({} file(s))", manifest.files.len()),
+                                        Err(e) => println!("Broadcast error: {e}"),
+                                    }
+                                }
+                                Err(e) => println!("Serialize error: {e}"),
+                            },
+                            Err(e) => println!("Save error: {e}"),
+                        }
+                    }
+                    Err(e) => println!("Scan error: {e}"),
+                }
+            }
+
             // quit
             _ if line == "quit" => {
                 break;

@@ -1175,6 +1175,9 @@ fetch blobaazlu5wae...
 -> cache/6b9f63d5a4f334b3.parquet
 ```    
 
+## 7. Manual manifest refresh (without restarting the node)
+
+
 ## References
 
 ##### R1 | [Rust and Cargo installation](https://doc.rust-lang.org/cargo/getting-started/installation.html)
