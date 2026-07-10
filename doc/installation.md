@@ -12,10 +12,27 @@ The deployment model is one peer per machine: each institution runs a single pee
 | Python 3.10+ | Runs the client layer and jupyter | [python.org download](https://www.python.org/downloads/) |
 | `pip`/ `venv` | Python dependency | included with Python 3 |
 | `git` | Cloning the repository | your distro's package manager |
-Nothin else needs to be installed manually, the Tust dependencies (iroh, iroh-blobs, iroh-gossip, Axum, ...) are fetched automatically by `cargo build`, and the Python dependencies by `pip install -r requirements.txt`
 
-## 3. Installing Rust
-Follow the official instructions https://rust-lang.org/tools/install/. Once installed, open a new terminal and check:
+The Rust dependencies (iroh, iroh-blobs, iroh-gossip, Axum, ...) are fetched automatically by `cargo build`, and the Python dependencies by `pip install -r requirements.txt`
+
+
+## 3. Preparing the environment
+`tmux` is used to keep the P2P node and the Jupyter server running independently of the terminal session, allowing you to simulate realistic disconnection/reconnection conditions without interrupting the processes currently being evaluated. It's not mandatory but very useful.  
+tmux does not replace a real system service (`systemd`): if the VM restarts, everything stops, there is no automatic restart.
+```bash
+# build-essential: Compile and link native code (C, and thus Rust binaries)
+# git: Retrieve repository and Cargo's Git dependencies
+# tmux: Keep the process (node, jupyter) running
+# pkg-config + libssl-dev: Securing the build against Rust dependencies that rely on C system libraries
+
+sudo apt install -y build-essential git tmux pkg-config libssl-dev
+```
+Follow the official instructions https://rust-lang.org/tools/install/. 
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source "$HOME/.cargo/env"
+```
+Once installed, open a new terminal and check:
 ```bash
 rustc --version
 cargo --version
@@ -45,9 +62,12 @@ A "peer" is a single process that both serves your local Parquet files to the ne
 | `BOOTSTRAP_PEERS` | no | Comma separated `EndpointId` to join an existing network. Leave unset if you are the first peer |
 
 Place any `.parquet` file you want to share in `peer-dataset-federation/node/data/`.  
-### 6.1 first peer to start
+### 6.1 Start peer
 Then in your terminal
 ```bash
+# new tmux
+tmux new -s node
+# New peer
 INSTITUTION=<INSTITUTION> cargo run -- peer
 ```
 You should see something like:
@@ -95,13 +115,16 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
-`requirements.txt` covers the client library itself (`requests`, `pandas`, `duckdb`). If it does not yet include Jupyter, add it:
-```bash
-pip install jupyterlab
-```
+`requirements.txt` covers the client library itself (`requests`, `pandas`, `duckdb`,`jupyter`,`jupyterlab`,`pyarrow`)
 To leave the virtual environment later: `deactivate`.
 
 ## 9. Running a notebook
+Launch Jupyter in another tmux session (so as not to block the terminal)
+```bash
+tmux new -s jupyter
+# Make sure you're in the venv (source .venv/bin/activate)
+jupyter lab
+```
 A minimal walkthrough, in case you want to reproduce it cell by cell:
 ```Python
 import logging
@@ -119,6 +142,11 @@ dataset = P2PDataset(client)
 
 # 1. Discover what is available on the network
 dataset.files()
+
+# Discover in a more readable way
+dataset.files_df()
+# You can change the number of visible columns
+dataset.files_df(2)
 
 # 2. load a single file (fetches it into cache/ if not already there)
 df = dataset.load("sample.parquet")
