@@ -52,8 +52,8 @@ This document will evolve as the project progresses, and the initial information
 | Task | Write demo notebooks | 19.07 | Upcoming |
 | Task | End-to-end validation VM | 19.07 | Upcoming |
 | **Milestone** | Migrate the testbed to virtual machines with separate network stacks to exercise NAT traversal and relay fallback for the first time. | 19.07 | Upcoming |
-| Task | Set up 2 VirtualBox VMs with separate networks | 19.07 | Upcoming |
-| Task | Deploy and run the Rust node on both VMs | 19.07 | Upcoming |
+| Task | Set up 2 VirtualBox VMs with separate networks | 19.07 | Done |
+| Task | Deploy and run the Rust node on both VMs | 19.07 | Done |
 | Task | Validate NAT traversal and relay fallback (iroh handles it, validate via logs) | 19.07 | Upcoming |
 | W11-W13 | **4. Robustness and evaluation in a 2–5 machine testbed** | 20.07 - 09.08 | Upcoming |
 | **Milestone** | Test behavior under realistic conditions: peers joining/leaving, partial availability, varying bandwidth. | 09.08 | Upcoming |
@@ -68,25 +68,6 @@ This document will evolve as the project progresses, and the initial information
 | **Milestone** | **Executive summary** | **25/08/2026** | Upcoming |
 | **Milestone** | **Poster** | **25/08/2026** | Upcoming |
 
-#### 1.11 Milestone V1, deadline friday 18.07
-Due to a potential change in the deadline for submitting the code (Week 15has been moved to Week 10), here is an update to accommodate this change.
-
-| Type | Deliverable | Target date | Status |
-|---|-------------|-------------|--------|
-| Task | Implement `p2p.load(filename)`, fetch + return pandas DataFrame | 18.07 | Done |
-| Task | Implement `p2p.query(sql)`, fetch all network files then run DuckDB query | 18.07 | Done |
-| Task | Write demo notebook (discover -> load -> query across 2 peers) | 18.07 | Upcoming |
-| Task | Set up 2 VirtualBox VMs | 18.07 | Upcoming |
-| Task | Deploy Rust node on both VM | 18.07 | Upcoming |
-| Task | Validate NAT traversal and relay fallback via iroh logs | 18.07 | Upcoming |
-| Task | End-to-end validation: run demo notebook against 2 live VMs | 18.07 | Upcoming |
-| Task | Update system architecture docuemnt (Python layer + full data flow) | 18.07 | Upcoming |
-| Task | Write installation guide | 18.07 | Upcoming |
-| Task | Write README (project overview, quickstart, project structure) | 18.07 | Upcoming |
-| Task | Add basic customizable filter | 18.07 | Upcoming |
-| Task | VENV (topic id), simplify code modification, chose data directory place | 18.07 | Upcoming |
-| Task | tmux? | 18.07 | Upcoming |
-| Task | update all data manifest, need to be updated when file added to data directory and send to other after that | 18.07 | Upcoming |
 
 
 ### 1.2 Key Milestones
@@ -875,6 +856,23 @@ This week has again been heavily focused on the overall architecture, with the i
 - Finish dataset.files() to make it easier to read
 - test on 2 VM
 
+---
+
+### 10/07/2026
+
+**Work done:**
+- Refresh manifest automatically
+- pre-release of the project
+- Change columns view for the notebook
+- update installation.md
+- Test installation on 2 VM
+
+**Decisions / Observations / Blockers:**
+
+**Next steps:**
+- Test NAT traversal and relay fallback
+- Start readme and update all the documentation
+
 ## Weekly Summary 06/07 - 12/07
 
 **Abstract**
@@ -895,18 +893,3 @@ This week has again been heavily focused on the overall architecture, with the i
 
 -->
 
-
-### Temp todo / nice to have
-**Todo**
-what
-- VENV (Topic Id), simplify code modification, chose data directory place
-- tmux?
-- update all data manifest add / periodical (need to be updated when file added to data directory and send to other after that)
-- customizable search filter
-
-- Fatest file sharing (2 peers having all the data for example) // flag main sharing
-- Temp memory storage to disk (MemStore to FsStore)
-
-**Nice to have, upgrade**
-- Local DB
-- Parquet partial-read optimization
