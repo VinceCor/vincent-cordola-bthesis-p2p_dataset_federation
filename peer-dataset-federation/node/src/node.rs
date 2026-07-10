@@ -376,7 +376,7 @@ pub async fn peer() -> Result<()> {
     // Interactive command loop
     // tokio::io::BufReader wraps stdin so that read_line().await yields control back to the Tokio runtime while waiting for input
     // instead of blocking the thread. This is what allow the Router to keep serving incoming connections
-    println!("Router started. Type 'fetch <ticket>' or 'quit'");
+    println!("Router started. Type 'fetch <ticket>', 'refresh' or 'quit'");
 
     let stdin = tokio::io::BufReader::new(tokio::io::stdin());
     let mut lines = tokio::io::AsyncBufReadExt::lines(stdin);
