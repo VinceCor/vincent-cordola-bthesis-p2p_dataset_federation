@@ -1175,6 +1175,125 @@ fetch blobaazlu5wae...
 -> cache/6b9f63d5a4f334b3.parquet
 ```    
 
+## 7. Manual manifest refresh (without restarting the node)
+> References: [tokio mutex](https://docs.rs/tokio/latest/tokio/sync/struct.Mutex.html), [iroh-gossip](https://docs.rs/iroh-gossip/latest/iroh_gossip/)
+
+In section 6, the manifest is broadcast exactly once: right after the node joins the gossip topic, inside `gossip_task`. This has a limitation, if a new `.parquet` file is added to `data/` while the node is already running, the only way to advertise it to the rest of the swarm is to restart the process. This section adds a `refresh` command to the interactive command loop, alongside `fetch` and `quit`, that rescans `data/`, rebuilds the manifest, and rebroadcasts it on demand.
+
+### 7.1 Problem
+```bash
+fetch <ticket>  | download the file identified by the ticket
+quit            | shutdown
+```
+The interactive loop already supports two commands. Both are handled inside `peer()`, which also owns the `store` and `downloader` used by `fetch`. The gossip `sender`, however, is moved into `gossip_task` and consumed there, it broadcasts once and is then no longer reachable from anywhere else in the program. To rebroadcast from the command loop, the `sender` needs to be reachable from two places at once.
+
+### 7.2 Sharing the gossip sender
+> References: [Arc](https://doc.rust-lang.org/std/sync/struct.Arc.html) [tokio mutex](https://docs.rs/tokio/latest/tokio/sync/struct.Mutex.html)
+
+```Rust
+let (sender, mut receiver) = gossip
+    .subscribe(topic_id, bootstrap.clone())
+    .await
+    .std_context("Error subscibing to gossip topic")?
+    .split();
+
+// Split between gossip_task (initial broadcast) and the stdin loop (manual refresh)
+let sender = Arc::new(tokio::sync::Mutex::new(sender));
+```
+`Arc` allows the same `sender` to be cloned and held by two tasks at once. `Mutex` is required because `GossipSender::broadcast` takes `&self` behind an owned value, only one task may hold the local at a time, which is exactly what is needed since only one broadcast should happen at any given moment.
+
+### 7.3 Moving the initial broadcast into `gossip_task`
+The scan, save, serialize and broadcast steps that used to happen once before spawning `gossip_task` are moved insid it, so that the exact same sequence can be reused later by the `refresh` command.
+```Rust
+let gossip_sender = sender.clone();
+let gossip_store = store.clone();
+let gossip_institution = institution.clone();
+let gossip_endpoint_id = endpoint.id();
+
+let gossip_task = tokio::spawn(async move {
+    if !bootstrap.is_empty() {
+        if let Err(e) = receiver.joined().await {
+            eprintln!("Gossip: error waiting for peers to join: {e}");
+        }
+    }
+
+    match build_local_manifest_files(&gossip_store, gossip_endpoint_id).await {
+        Ok(files) => {
+            let manifest = Manifest {institution: gossip_institution.clone(), files};
+            if let Err(e) = save_peer_manifest(&manifest).await {
+                eprintln!("Gossip: error saving local manifest: {e}");
+            }
+            match serde_json::to_vec(&manifest) {
+                Ok(payload) => {
+                    let guard = gossip_sender.lock().await;
+                    if let Err(e) = guard.broadcast(payload.into()).await {
+                        eprintln!("Gossip: error broadcasting manifest: {e}");
+                    } else {
+                        println! (
+                            "Gossip: initial manifest broadcast for institution '{}' ({} file(s))",
+                            manifest.institution,
+                            manifest.files.len()
+                        );
+                    }
+                }
+                Err(e) => eprintln!("Gossip: error serializing manifest: {e}")
+            }
+        }
+        Err(e) => eprintln!("Gossip: error scanning data/: {e}")
+    }
+```
+`sender.clone()`, `store.clone()`, `institution.clone()` and `endpoint.id()` are taken before the async block, since the block itself takes ownership (`move`) of everything it uses, and both `gossip_task` and the stdin loop need their own copies afterwars.
+
+`gossip_sender.lock().await` waits for the mutex if a `refresh` happens to run at the exact same time. The lock is only held for the duration of the `broadcast` call, and `broadcast` itself operates ovre an already open gossip stream, so this does not require re-negotiating a connection.
+
+Whit this change, the local manifest saved in `data/peers_manifest/` and the local files list are no longer prepared before spawning `gossip_task`, they are produced inside it.
+
+### 7.4 The `refresh` command
+```Rust
+_ if line == "refresh" => {
+    match build_local_manifest_files(&store, endpoint.id()).await {
+        Ok(files) => {
+            let manifest = Manifest { institution: institution.clone(), files };
+            match save_peer_manifest(&manifest).await {
+                Ok(_) => match serde_json::to_vec(&manifest) {
+                    Ok(payload) => {
+                        let guard = sender.lock().await;
+                        match guard.broadcast(payload.into()).await {
+                            Ok(_) => println!("Manifest rebroadcast ({} file(s))", manifest.files.len()),
+                            Err(e) => println!("Broadcast error: {e}"),
+                        }
+                    }
+                    Err(e) => println!("Serialize error: {e}"),
+                },
+                Err(e) => println!("Save error: {e}"),
+            }
+        }
+        Err(e) => println!("Scan error: {e}"),
+    }
+}
+```
+`refresh` follows the exact same four steps as the initial broadcast in `gossip_task`: rescan `data/` with `build_local_manifest_files`, save the result locally with `save_peer_manifest`, serialize it to JSON, then broadcast it while holding the shared `sender` lock. Since it runs on the same `Endpoint` and `store` already used by `fetch`, no additional state needs to be created for this command.
+
+Update the startup message accordingly:
+```Rust
+println!("Router started. Type 'fetch <ticket>', 'refresh' or 'quit'");
+```
+### 7.5 Result
+After adding a new `.parquet` file to `data/` on a running peer, typing `refresh` in its terminal is enough for the other peers to receive it, no restart required.
+```bash
+> refresh
+Manifest rebroadcast (2 file(s))
+```
+On a peer that was already connected to the topic, the corresponding log line appears without any action on its side:
+```bash
+Gossip: received manifest from 'peer2' (2 file(s))
+```
+
+### 7.6 Known limitation
+Each `refresh` rescans and rehashes every files in `data/`, not only the newly added ones. This is acceptable for the file counts expected in this proof of concept, but it means the cost of a refresh grows linearly with the number of local files. Incremental hashing (skipping files whose hash is already known) is a possible improvement for future work.  
+A periodic rebroadcast could also be considered.
+
+
 ## References
 
 ##### R1 | [Rust and Cargo installation](https://doc.rust-lang.org/cargo/getting-started/installation.html)

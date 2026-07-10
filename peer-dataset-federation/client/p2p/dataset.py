@@ -13,13 +13,22 @@ logger = logging.getLogger(__name__)
 
 cache_dir = (Path(__file__).resolve().parent / "../../node/cache").resolve()
 
+def format_size(num_bytes: int) -> str:
+    # Format in readable units (KB/MB/GB)
+    size = float(num_bytes)
+    for unit in ("B", "KB", "MB", "GB"):
+        if size < 1024:
+            return f"{size:.1f} {unit}"
+        size /= 1024
+    return f"{size:1.f} TB"
+
 # Fetch on demand access to the distributed Parquet dataset
 class P2PDataset:
 
     def __init__(self, client: P2PClient):
         self._client = client
 
-    # List every file visible across all peer manifests
+    # List every file visible across all peer manifests (raw data)
     def files(self) -> list[dict]:
         response = self._client.files()
         result = []
@@ -36,6 +45,28 @@ class P2PDataset:
                     "columns": stats.get("columns", []),
                 })
         return result
+    
+    # A human-readable version of 'files()', designed for display in a notebook
+    # Use 'files()' if you need the raw data
+    # Claude chatbot was use as an help for this function
+    def files_df(self, max_columns_shown: int = 8) -> pd.DataFrame:
+        rows = self.files()
+        if not rows:
+            return pd.DataFrame(columns=["file_name", "institution", "num_rows", "num_row_groups", "size", "columns"])
+        
+        def format_columns(cols):
+            names = [c["name"] for c in cols]
+            if len(names) > max_columns_shown:
+                shown = ", ".join(names[:max_columns_shown])
+                return f"{shown}, ... (+{len(names) - max_columns_shown} more)"
+            return ", ".join(names)
+
+        df = pd.DataFrame(rows)
+        df["size"] = df["file_size_bytes"].apply(format_size)
+        df["columns"] = df["columns"].apply(format_columns)
+        df = df.drop(columns=["file_size_bytes"])
+        return df[["file_name", "institution", "num_rows", "num_row_groups", "size", "columns"]]
+
 
 
     # Return a local Path to a *file_name*, fetching it from the network if it is not already cached.
