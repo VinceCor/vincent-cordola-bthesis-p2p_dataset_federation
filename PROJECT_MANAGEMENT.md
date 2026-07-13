@@ -63,8 +63,8 @@ This document will evolve as the project progresses, and the initial information
 | **Milestone** | Finalize the notebook as the primary demonstration artifact. | 12.08 | Upcoming |
 | **Milestone** | Produce setup scripts/instructions for reproducing the demo on 2–5 machines | 12.08 | Upcoming |
 | **Milestone** | Write a short evaluation report summarizing results, constraints, and recommended next steps for downstream integration work. | 12.08 | Upcoming |
-| **Milestone** | **Final code submitted** | **25/08/2026 12:00** | Upcoming |
-| **Milestone** | **Final report submitted** | **25/08/2026 12:00** | Upcoming |
+| **Milestone** | **Final code submitted** | **17/07/2026 12:00** | Upcoming |
+| **Milestone** | **Final report submitted** | **12/08/2026 12:00** | Upcoming |
 | **Milestone** | **Executive summary** | **25/08/2026** | Upcoming |
 | **Milestone** | **Poster** | **25/08/2026** | Upcoming |
 
@@ -150,7 +150,7 @@ This document will evolve as the project progresses, and the initial information
     - Data segmentation will likely not be done in Iroh part (so each peer will have all the data), which will make the data accessible on each node / more avaibility.
 - Following the PoC / implement in other projects
     - Thanks to iroh's flexibility, this project can be adapted to different environments, but it will still require a lot of adjustment
-    - A particular version of Jupyter will likely be best suited for a specific type of data or projetct. But that remains to be seen once the project is complete.
+    - A particular version of Jupyter will likely be best suited for a specific type of data or project. But that remains to be seen once the project is complete.
 
 
 <!-- Reviews and Meetings template

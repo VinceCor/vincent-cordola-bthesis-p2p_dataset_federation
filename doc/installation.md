@@ -20,7 +20,7 @@ The Rust dependencies (iroh, iroh-blobs, iroh-gossip, Axum, ...) are fetched aut
 `tmux` is used to keep the P2P node and the Jupyter server running independently of the terminal session, allowing you to simulate realistic disconnection/reconnection conditions without interrupting the processes currently being evaluated. It's not mandatory but very useful.  
 tmux does not replace a real system service (`systemd`): if the VM restarts, everything stops, there is no automatic restart.
 ```bash
-# build-essential: Compile and link native code (C, and thus Rust binaries)
+# build-essential: Compile and link native code (C, and Rust binaries)
 # git: Retrieve repository and Cargo's Git dependencies
 # tmux: Keep the process (node, jupyter) running
 # pkg-config + libssl-dev: Securing the build against Rust dependencies that rely on C system libraries
@@ -61,8 +61,9 @@ A "peer" is a single process that both serves your local Parquet files to the ne
 | `INSTITUTION` | yes | Name advertised in this node's manifest (e.g. `mcgill`, `hes-so`) |
 | `BOOTSTRAP_PEERS` | no | Comma separated `EndpointId` to join an existing network. Leave unset if you are the first peer |
 
-Place any `.parquet` file you want to share in `peer-dataset-federation/node/data/`.  
-### 6.1 Start peer
+Place any `.parquet` file you want to share in `peer-dataset-federation/node/data/`.
+
+### 6.1 Start peer (if it is the first peer of the network)
 Then in your terminal
 ```bash
 # new tmux
